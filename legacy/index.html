@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Job.Work.Pay</title>
+    <meta
+      name="description"
+      content="Search for the work you want and discover job paths, skills, and pay expectations."
+    />
+    <link rel="preload" href="styles.css?v=2" as="style" onload="this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="styles.css?v=2"></noscript>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext x='0' y='14' font-size='14'%3EJW%3C/text%3E%3C/svg%3E">
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="search-hero" aria-labelledby="site-title">
+        <h1 id="site-title" aria-label="Job Work Pay">
+          <span class="title-job">Job</span><span class="title-dot">.</span><span class="title-work">Work</span><span class="title-dot">.</span><span class="title-pay">Pay</span>
+        </h1>
+        <form class="prompt-box" id="workSearch">
+          <label class="sr-only" for="workQuery">Search for possible work</label>
+          <textarea
+            id="workQuery"
+            name="workQuery"
+            rows="3"
+            placeholder="How can I help you today?"
+          ></textarea>
+          <div class="prompt-actions">
+            <div class="prompt-tools" aria-label="Role selection">
+              <button class="mode-chip" type="button" aria-pressed="false">Jobseeker</button>
+              <button class="mode-chip is-active" type="button" aria-pressed="true">Job Provider</button>
+            </div>
+            <button class="submit-button" type="submit" aria-label="Search work database">
+              <span aria-hidden="true">↑</span>
+            </button>
+          </div>
+        </form>
+        <p class="hint" id="searchHint">Search by skill, schedule, experience level, or pay goal.</p>
+        <section class="results" id="results" aria-live="polite"></section>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>© 2026 Job.Work.Pay. All rights reserved.</p>
+    </footer>
+
+    <script src="supabase-config.js" defer></script>
+    <script src="script.js?v=3" defer></script>
+  </body>
+</html>

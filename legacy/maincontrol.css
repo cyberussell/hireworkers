@@ -1,0 +1,273 @@
+.hidden {
+  display: none !important;
+}
+
+.admin-body {
+  min-height: 100vh;
+}
+
+.admin-login {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.admin-login-card {
+  width: min(360px, 100%);
+  display: grid;
+  gap: 14px;
+  padding: 28px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  text-align: center;
+}
+
+.admin-login-card h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.admin-login-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.admin-login-card input {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #05050a;
+  color: var(--ink);
+  font-size: 16px;
+  font-family: inherit;
+}
+
+.admin-login-card button {
+  padding: 12px;
+  border: 0;
+  border-radius: 8px;
+  background: rgb(56, 140, 255);
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.admin-error {
+  min-height: 18px;
+  margin: 0;
+  color: var(--red);
+  font-size: 13px;
+}
+
+.admin-dashboard {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+  display: grid;
+  gap: 20px;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-header h1 {
+  font-size: 26px;
+  margin: 0;
+}
+
+.admin-logout {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.admin-stat-card {
+  display: grid;
+  gap: 4px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  text-align: center;
+}
+
+.admin-stat-card span {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.admin-stat-card label {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-tab {
+  padding: 10px 16px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  font-family: inherit;
+}
+
+.admin-tab.is-active {
+  color: var(--ink);
+  border-bottom-color: rgb(56, 140, 255);
+}
+
+.admin-panel-toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.admin-panel-toolbar select,
+.admin-panel-toolbar button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.admin-table-wrap {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-table-wrap p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.admin-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+.admin-row-main {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.admin-row-main h3 {
+  margin: 0;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-row-sub {
+  margin: 0;
+  color: var(--yellow);
+  font-size: 12px;
+}
+
+.admin-row-desc {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.admin-row-meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.admin-badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.admin-badge.status-draft {
+  background: rgba(255, 210, 63, 0.15);
+  color: var(--yellow);
+}
+
+.admin-badge.status-published {
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+}
+
+.admin-badge.status-rejected {
+  background: rgba(232, 55, 58, 0.15);
+  color: var(--red);
+}
+
+.admin-row-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.admin-row-actions button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+.admin-row-actions button.danger {
+  border-color: rgba(232, 55, 58, 0.5);
+  color: var(--red);
+}
+
+@media (max-width: 640px) {
+  .admin-row {
+    flex-direction: column;
+  }
+
+  .admin-row-actions {
+    flex-direction: row;
+  }
+}
