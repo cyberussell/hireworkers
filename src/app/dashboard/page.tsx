@@ -20,7 +20,7 @@ import { PremiumLockedPanel } from "@/components/dashboard/premium-locked-panel"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const metadata: Metadata = {
-  title: "Dashboard — HireWorkers.work",
+  title: "Dashboard — Hire Workers That Work",
   description: "Your AI hiring operations center.",
 };
 

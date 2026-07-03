@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { TalentExperience } from "@/components/talent/talent-experience";
 
 export const metadata: Metadata = {
-  title: "Find Talent — HireWorkers.work",
+  title: "Find Talent — Hire Workers That Work",
   description:
     "Browse verified, skilled Filipino talent — tradespeople, caregivers, and hands-on professionals — no degree required.",
 };

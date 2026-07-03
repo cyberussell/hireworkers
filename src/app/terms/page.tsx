@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { LegalPageShell } from "@/components/legal/legal-page-shell";
 
 export const metadata: Metadata = {
-  title: "Terms and Conditions — HireWorkers.work",
+  title: "Terms and Conditions — Hire Workers That Work",
   description:
-    "Terms and Conditions governing use of the HireWorkers.work AI Hiring Assistant platform, operated by HireWorkers.work Manpower Services.",
+    "Terms and Conditions governing use of the Hire Workers That Work AI Hiring Assistant platform, operated by PayJobs.work Manpower Services.",
 };
 
 const EFFECTIVE_DATE = "July 2, 2026";
@@ -16,7 +16,7 @@ export default function TermsPage() {
         These Terms and Conditions (&ldquo;Terms&rdquo;) govern access to and
         use of the website, AI Hiring Assistant, and related services
         (collectively, the &ldquo;Service&rdquo;) provided by{" "}
-        <strong>HireWorkers.work Manpower Services</strong> (&ldquo;HireWorkers.work,&rdquo;
+        <strong>PayJobs.work Manpower Services</strong> (&ldquo;Hire Workers That Work,&rdquo;
         &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;). By accessing
         or using the Service, you agree to be bound by these Terms. If you do
         not agree, do not use the Service.
@@ -25,14 +25,14 @@ export default function TermsPage() {
       <section className="flex flex-col gap-2">
         <h2>1. Description of the Service</h2>
         <p>
-          HireWorkers.work is a technology platform that uses artificial
+          Hire Workers That Work is a technology platform that uses artificial
           intelligence to help employers describe hiring needs, generate job
           briefs, discover and evaluate candidate profiles, and prepare for
-          interviews. HireWorkers.work is not itself an employer, a party to any
+          interviews. Hire Workers That Work is not itself an employer, a party to any
           employment or engagement contract formed between an employer and a
           candidate, or a guarantor of any hire, placement, or work
           arrangement. To the extent any feature of the Service constitutes
-          recruitment or placement activity under Philippine law, HireWorkers.work
+          recruitment or placement activity under Philippine law, PayJobs.work
           Manpower Services will comply with applicable requirements of the
           Department of Labor and Employment (DOLE) that apply to that
           activity.
@@ -121,7 +121,7 @@ export default function TermsPage() {
         <h2>8. Intellectual Property</h2>
         <p>
           The Service, including its design, branding, and underlying
-          software, is owned by HireWorkers.work Manpower Services or its
+          software, is owned by PayJobs.work Manpower Services or its
           licensors and is protected by applicable intellectual property
           laws. You may not copy, modify, or distribute any part of the
           Service except as necessary to use it for its intended purpose.
@@ -164,7 +164,7 @@ export default function TermsPage() {
       <section className="flex flex-col gap-2">
         <h2>12. Limitation of Liability</h2>
         <p>
-          To the fullest extent permitted by law, HireWorkers.work Manpower
+          To the fullest extent permitted by law, PayJobs.work Manpower
           Services will not be liable for any indirect, incidental,
           consequential, or special damages, or for any loss of profits,
           data, or business opportunity, arising from your use of the
@@ -176,7 +176,7 @@ export default function TermsPage() {
       <section className="flex flex-col gap-2">
         <h2>13. Indemnification</h2>
         <p>
-          You agree to indemnify and hold HireWorkers.work Manpower Services
+          You agree to indemnify and hold PayJobs.work Manpower Services
           harmless from any claim, loss, or damage arising from your use of
           the Service, your violation of these Terms, or your violation of
           any applicable law.
@@ -220,7 +220,7 @@ export default function TermsPage() {
           <a href="mailto:legal@hireworkers.work">legal@hireworkers.work</a>.
         </p>
         <p className="text-xs text-muted-foreground">
-          HireWorkers.work Manpower Services — [Insert registered business
+          PayJobs.work Manpower Services — [Insert registered business
           address]
         </p>
       </section>

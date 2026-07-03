@@ -12,9 +12,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "How To's — HireWorkers.work Help",
+  title: "How To's — Hire Workers That Work Help",
   description:
-    "Step-by-step guides for hiring with the AI Hiring Assistant and building your profile to find work on HireWorkers.work.",
+    "Step-by-step guides for hiring with the AI Hiring Assistant and building your profile to find work on Hire Workers That Work.",
 };
 
 const EMPLOYER_STEPS = [
@@ -90,7 +90,7 @@ export default function HelpPage() {
           How To&apos;s
         </h1>
         <p className="text-sm text-muted-foreground">
-          Quick guides to get the most out of HireWorkers.work.
+          Quick guides to get the most out of Hire Workers That Work.
         </p>
       </div>
 
