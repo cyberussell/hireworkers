@@ -5,7 +5,6 @@ import { AuthProvider } from "@/contexts/auth-context";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { SketchBackground } from "@/components/shared/sketch-background/SketchBackground";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -39,12 +38,9 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
             <TooltipProvider delay={200}>
-              <div className="relative flex min-h-full flex-1 flex-col">
-                <SketchBackground />
-                <SiteHeader />
-                <main className="flex-1">{children}</main>
-                <SiteFooter />
-              </div>
+              <SiteHeader />
+              <main className="flex-1">{children}</main>
+              <SiteFooter />
             </TooltipProvider>
           </AuthProvider>
         </ThemeProvider>

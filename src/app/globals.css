@@ -217,13 +217,3 @@
     @apply font-sans;
   }
 }
-
-:root {
-  --sketch-line: #9a9a90;
-  --sketch-opacity: 0.045;
-}
-
-.dark {
-  --sketch-line: #8a8a92;
-  --sketch-opacity: 0.05;
-}
