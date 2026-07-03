@@ -1,4 +1,4 @@
-import { supabaseSelect } from "@/lib/supabase-admin";
+import { supabaseSelect, supabaseUpdateOne } from "@/lib/supabase-admin";
 import type { Candidate, CandidateCategory, Availability } from "@/types/candidate";
 import type { SeekerProfileDraft } from "@/types/seeker-profile-draft";
 
@@ -75,6 +75,28 @@ export async function fetchAllSeekerCandidates(): Promise<Candidate[]> {
     "select=*&order=created_at.desc"
   );
   return rows.map(rowToCandidate);
+}
+
+export async function fetchSeekerCandidateByUserId(
+  userId: string
+): Promise<Candidate | null> {
+  const rows = await supabaseSelect<SeekerCandidateRow>(
+    "seeker_candidates",
+    `select=*&user_id=eq.${userId}`
+  );
+  return rows[0] ? rowToCandidate(rows[0]) : null;
+}
+
+export async function updateSeekerCandidateAssessments(
+  userId: string,
+  assessments: Candidate["assessments"]
+): Promise<Candidate | null> {
+  const row = await supabaseUpdateOne<SeekerCandidateRow>(
+    "seeker_candidates",
+    `user_id=eq.${userId}`,
+    { assessments }
+  );
+  return row ? rowToCandidate(row) : null;
 }
 
 export function draftToRow(draft: SeekerProfileDraft, userId: string) {

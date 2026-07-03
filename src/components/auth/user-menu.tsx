@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { LogOut, User as UserIcon } from "lucide-react";
+import Link from "next/link";
+import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -67,6 +68,10 @@ export function UserMenu() {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel className="truncate">{name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem render={<Link href="/work/dashboard" />}>
+          <LayoutDashboard className="size-4" />
+          My Dashboard
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => void signOut()}>
           <LogOut className="size-4" />
           Sign out

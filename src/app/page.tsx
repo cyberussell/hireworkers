@@ -9,7 +9,8 @@ export default function Home() {
         </h1>
         <p className="max-w-xl text-balance text-base text-muted-foreground sm:text-lg">
           Describe the person you need, and our AI Hiring Assistant will help
-          you find, evaluate, and hire the right candidate.
+          you find, evaluate, and hire the right candidate — judged on real
+          skill, not a diploma.
         </p>
       </div>
 

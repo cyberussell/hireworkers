@@ -14,7 +14,7 @@ export function isSupabaseConfigured() {
  */
 async function supabaseRequest<T>(
   table: string,
-  method: "GET" | "POST",
+  method: "GET" | "POST" | "PATCH",
   options: { query?: string; body?: unknown } = {}
 ): Promise<T> {
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
@@ -30,7 +30,7 @@ async function supabaseRequest<T>(
       apikey: SUPABASE_SERVICE_ROLE_KEY,
       Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
       "Content-Type": "application/json",
-      Prefer: method === "POST" ? "return=representation" : "",
+      Prefer: method === "GET" ? "" : "return=representation",
     },
     body: options.body ? JSON.stringify(options.body) : undefined,
     cache: "no-store",
@@ -54,5 +54,14 @@ export async function supabaseInsertOne<T>(
   row: Record<string, unknown>
 ): Promise<T> {
   const rows = await supabaseRequest<T[]>(table, "POST", { body: row });
+  return rows[0];
+}
+
+export async function supabaseUpdateOne<T>(
+  table: string,
+  query: string,
+  patch: Record<string, unknown>
+): Promise<T> {
+  const rows = await supabaseRequest<T[]>(table, "PATCH", { query, body: patch });
   return rows[0];
 }

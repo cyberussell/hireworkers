@@ -290,7 +290,14 @@ export function ProfileDraftCard({
               <Link href="/talent" className="text-primary underline underline-offset-2">
                 Find Talent
               </Link>
-              .
+              . Head to{" "}
+              <Link
+                href="/work/dashboard"
+                className="text-primary underline underline-offset-2"
+              >
+                your dashboard
+              </Link>{" "}
+              to take a quick skills assessment.
             </p>
           )}
           {publishStatus === "error" && (

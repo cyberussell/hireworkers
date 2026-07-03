@@ -3,7 +3,8 @@ import { TalentExperience } from "@/components/talent/talent-experience";
 
 export const metadata: Metadata = {
   title: "Find Talent — PayJobs.work",
-  description: "Browse verified Filipino professionals ready to work.",
+  description:
+    "Browse verified, skilled Filipino talent — tradespeople, caregivers, and hands-on professionals — no degree required.",
 };
 
 export default function TalentPage() {
@@ -12,7 +13,8 @@ export default function TalentPage() {
       <div className="mb-8 flex flex-col gap-2">
         <h1 className="text-2xl font-semibold tracking-tight">Find Talent</h1>
         <p className="text-sm text-muted-foreground">
-          Verified Filipino professionals, ready to work.
+          Verified, skilled Filipino talent, ready to work — judged on real
+          experience, not a diploma.
         </p>
       </div>
       <TalentExperience />
