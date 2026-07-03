@@ -3,12 +3,14 @@
 import { motion } from "framer-motion";
 
 export const HIRING_SUGGESTIONS = [
-  "Carpenter",
   "Electrician",
-  "Caregiver",
-  "Driver",
+  "Developer",
   "Virtual Assistant",
+  "Carpenter",
+  "Designer",
+  "Caregiver",
   "Customer Support",
+  "Driver",
 ] as const;
 
 export function SuggestionChips({

@@ -37,7 +37,7 @@ export function SiteHeader() {
             nativeButton={false}
             render={<Link href="/hire" />}
           >
-            Ask AI
+            Start Hiring
           </Button>
         </div>
       </div>

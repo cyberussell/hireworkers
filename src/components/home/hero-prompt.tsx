@@ -2,16 +2,33 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { SuggestionChips } from "@/components/home/suggestion-chips";
 
+const PLACEHOLDER_EXAMPLES = [
+  "I need a licensed electrician for tomorrow…",
+  "Looking for a Bubble.io developer with API experience…",
+  "Need a reliable part-time virtual assistant…",
+  "Find an experienced carpenter near Quezon City…",
+  "Looking for a Shopify customer support specialist…",
+];
+
 export function HeroPrompt() {
   const router = useRouter();
   const [value, setValue] = useState("");
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+
+  useEffect(() => {
+    if (value) return;
+    const interval = setInterval(() => {
+      setPlaceholderIndex((index) => (index + 1) % PLACEHOLDER_EXAMPLES.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [value]);
 
   function goToAssistant(prompt: string) {
     const trimmed = prompt.trim();
@@ -50,13 +67,13 @@ export function HeroPrompt() {
               goToAssistant(value);
             }
           }}
-          placeholder="I need a Bubble.io developer with API experience…"
+          placeholder={PLACEHOLDER_EXAMPLES[placeholderIndex]}
           rows={3}
           className="resize-none border-0 bg-transparent p-2 text-base shadow-none focus-visible:ring-0 md:text-lg"
         />
         <div className="flex items-center justify-end px-1 pb-1">
           <Button type="submit" disabled={!value.trim()}>
-            Ask AI
+            Start Hiring
             <ArrowUp className="size-4" />
           </Button>
         </div>
