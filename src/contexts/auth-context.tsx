@@ -15,7 +15,7 @@ type OAuthProvider = "google" | "facebook";
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
-  signInWith: (provider: OAuthProvider, next?: string) => Promise<void>;
+  signInWith: (provider: OAuthProvider, next?: string) => Promise<string | null>;
   signOut: () => Promise<void>;
 }
 
@@ -45,12 +45,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function signInWith(provider: OAuthProvider, next = "/") {
     const supabase = createClient();
-    await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
         redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
       },
     });
+    return error?.message ?? null;
   }
 
   async function signOut() {

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -55,30 +56,42 @@ export function SignInDialog({
   description?: string;
 }) {
   const { signInWith } = useAuth();
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleSignIn(provider: "google" | "facebook") {
+    setError(null);
+    const message = await signInWith(provider, next);
+    if (message) setError(message);
+  }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) setError(null);
+        onOpenChange(next);
+      }}
+    >
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-2">
-          <Button
-            variant="outline"
-            onClick={() => void signInWith("google", next)}
-          >
+          <Button variant="outline" onClick={() => void handleSignIn("google")}>
             <GoogleIcon />
             Continue with Google
           </Button>
-          <Button
-            variant="outline"
-            onClick={() => void signInWith("facebook", next)}
-          >
+          <Button variant="outline" onClick={() => void handleSignIn("facebook")}>
             <FacebookIcon />
             Continue with Facebook
           </Button>
         </div>
+        {error && (
+          <p role="alert" className="text-sm text-destructive">
+            {error}
+          </p>
+        )}
       </DialogContent>
     </Dialog>
   );
