@@ -8,9 +8,7 @@ export default function Home() {
           Hire Skills. Not Degrees.
         </h1>
         <p className="max-w-xl text-balance text-base text-muted-foreground sm:text-lg">
-          Describe the work you need done. We match you with people who have
-          the skill, experience, and reliability to get it done — judged by
-          what they can do, not what&apos;s on paper.
+          Describe your job in minutes.
         </p>
       </div>
 

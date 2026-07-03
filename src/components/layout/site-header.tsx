@@ -15,12 +15,12 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6">
         <LogoWordmark />
-        <nav className="hidden items-center gap-1 sm:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-2 sm:flex" aria-label="Primary">
           {navLinks.map((link) => (
             <Button
               key={link.href}
               variant="ghost"
-              size="sm"
+              className="text-base font-bold"
               nativeButton={false}
               render={<Link href={link.href} />}
             >
