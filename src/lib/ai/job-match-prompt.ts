@@ -37,7 +37,7 @@ export function buildJobMatchResultSchema(jobIds: [string, ...string[]]) {
   });
 }
 
-const JOB_MATCH_SYSTEM_PROMPT = `You are PayJobs' AI job matching engine. You score how well each posted job fits what a job seeker in the Philippines is looking for.
+const JOB_MATCH_SYSTEM_PROMPT = `You are HireWorkers' AI job matching engine. You score how well each posted job fits what a job seeker in the Philippines is looking for.
 
 Rules:
 - Score and return EVERY job given to you — do not omit any jobId.

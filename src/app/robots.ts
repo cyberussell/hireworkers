@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/api/"],
       },
     ],
-    sitemap: "https://payjobs.work/sitemap.xml",
+    sitemap: "https://hireworkers.work/sitemap.xml",
   };
 }

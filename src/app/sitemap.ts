@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { candidates } from "@/lib/candidates";
 
-const BASE_URL = "https://payjobs.work";
+const BASE_URL = "https://hireworkers.work";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [

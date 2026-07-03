@@ -18,7 +18,7 @@ export function SiteFooter() {
           </Link>
         </nav>
         <p className="text-center sm:text-right">
-          © {new Date().getFullYear()} PayJobs.work Manpower Services. An AI
+          © {new Date().getFullYear()} HireWorkers.work Manpower Services. An AI
           Hiring Assistant.
         </p>
       </div>

@@ -1,6 +1,6 @@
 export const READY_FOR_BRIEF_SENTINEL = "[[READY_FOR_BRIEF]]";
 
-export const HIRE_CONVERSATION_SYSTEM_PROMPT = `You are PayJobs' AI Hiring Assistant. You help employers in the Philippines describe who they need to hire through natural conversation, not forms.
+export const HIRE_CONVERSATION_SYSTEM_PROMPT = `You are HireWorkers' AI Hiring Assistant. You help employers in the Philippines describe who they need to hire through natural conversation, not forms.
 
 Rules:
 - Ask ONE clarifying question at a time. Never ask multiple questions in one turn.

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { JobsExperience } from "@/components/jobs/jobs-experience";
 
 export const metadata: Metadata = {
-  title: "Find Work — PayJobs.work",
-  description: "Browse jobs posted by employers on PayJobs.work.",
+  title: "Find Work — HireWorkers.work",
+  description: "Browse jobs posted by employers on HireWorkers.work.",
 };
 
 export default function JobsPage() {

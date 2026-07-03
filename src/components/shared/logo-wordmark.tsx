@@ -9,10 +9,9 @@ export function LogoWordmark({ className }: { className?: string }) {
         "inline-flex items-center gap-[1px] text-lg font-bold tracking-tight",
         className
       )}
-      aria-label="Payjobs.work — Home"
+      aria-label="HireWorkers.work — Home"
     >
-      <span className="text-brand-pay">Pay</span>
-      <span className="text-brand-job">jobs</span>
+      <span className="text-brand-job">HireWorkers</span>
       <span className="text-brand-work">.work</span>
     </Link>
   );

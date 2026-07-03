@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { LegalPageShell } from "@/components/legal/legal-page-shell";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — PayJobs.work",
+  title: "Privacy Policy — HireWorkers.work",
   description:
-    "How PayJobs.work Manpower Services collects, uses, and protects information through the AI Hiring Assistant platform.",
+    "How HireWorkers.work Manpower Services collects, uses, and protects information through the AI Hiring Assistant platform.",
 };
 
 const EFFECTIVE_DATE = "July 3, 2026";
@@ -14,9 +14,9 @@ export default function PrivacyPage() {
     <LegalPageShell title="Privacy Policy" effectiveDate={EFFECTIVE_DATE}>
       <p>
         This Privacy Policy explains how{" "}
-        <strong>PayJobs.work Manpower Services</strong> (&ldquo;PayJobs.work,&rdquo;
+        <strong>HireWorkers.work Manpower Services</strong> (&ldquo;HireWorkers.work,&rdquo;
         &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;) handles
-        information in connection with the PayJobs.work website, AI Hiring
+        information in connection with the HireWorkers.work website, AI Hiring
         Assistant, and AI Profile Assistant (the &ldquo;Service&rdquo;). We
         wrote this to reflect what the Service actually does today, not a
         generic template — as we add features like accounts and an
@@ -238,10 +238,10 @@ export default function PrivacyPage() {
         <p>
           Questions about this Policy, or requests to remove or correct a
           posted job or candidate profile, can be sent to{" "}
-          <a href="mailto:privacy@payjobs.work">privacy@payjobs.work</a>.
+          <a href="mailto:privacy@hireworkers.work">privacy@hireworkers.work</a>.
         </p>
         <p className="text-xs text-muted-foreground">
-          PayJobs.work Manpower Services — [Insert registered business
+          HireWorkers.work Manpower Services — [Insert registered business
           address]
         </p>
       </section>

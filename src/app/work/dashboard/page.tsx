@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { SeekerDashboard } from "@/components/seeker-dashboard/seeker-dashboard";
 
 export const metadata: Metadata = {
-  title: "Your Dashboard — PayJobs.work",
+  title: "Your Dashboard — HireWorkers.work",
   description: "Manage your profile and take skill assessments.",
 };
 

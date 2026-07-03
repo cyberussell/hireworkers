@@ -28,9 +28,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { id } = await params;
   const candidate = await findCandidate(id);
-  if (!candidate) return { title: "Profile — PayJobs.work" };
+  if (!candidate) return { title: "Profile — HireWorkers.work" };
   return {
-    title: `${candidate.name} — ${candidate.professionalTitle} · PayJobs.work`,
+    title: `${candidate.name} — ${candidate.professionalTitle} · HireWorkers.work`,
     description: candidate.professionalSummary,
   };
 }

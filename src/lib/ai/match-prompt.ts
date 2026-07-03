@@ -40,7 +40,7 @@ export function buildMatchResultSchema(candidateIds: [string, ...string[]]) {
   });
 }
 
-const MATCH_SYSTEM_PROMPT = `You are PayJobs' AI candidate matching engine. You score how well each candidate fits what an employer is looking for.
+const MATCH_SYSTEM_PROMPT = `You are HireWorkers' AI candidate matching engine. You score how well each candidate fits what an employer is looking for.
 
 Rules:
 - Score and return EVERY candidate given to you — do not omit any candidateId.
