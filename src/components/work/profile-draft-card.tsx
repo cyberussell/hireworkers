@@ -22,6 +22,11 @@ import {
 } from "@/types/candidate";
 import type { SeekerProfileDraft } from "@/types/seeker-profile-draft";
 import { stashPendingProfileDraft } from "@/lib/pending-post";
+import {
+  isValidContactDetails,
+  isValidName,
+  validateProfileDraftFields,
+} from "@/lib/validate-profile-draft";
 
 const inputClass =
   "w-full rounded-md border border-border bg-background px-2.5 py-1.5 text-sm";
@@ -53,6 +58,9 @@ export function ProfileDraftCard({
     "idle" | "publishing" | "published" | "error"
   >("idle");
   const [signInOpen, setSignInOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const fieldErrors = validateProfileDraftFields(draft);
 
   function update<K extends keyof SeekerProfileDraft>(
     key: K,
@@ -62,6 +70,8 @@ export function ProfileDraftCard({
   }
 
   async function publish() {
+    if (fieldErrors.length > 0) return;
+
     if (!user) {
       stashPendingProfileDraft(draft);
       setSignInOpen(true);
@@ -69,6 +79,7 @@ export function ProfileDraftCard({
     }
 
     setPublishStatus("publishing");
+    setErrorMessage(null);
     try {
       const response = await fetch("/api/seeker-candidates", {
         method: "POST",
@@ -79,6 +90,16 @@ export function ProfileDraftCard({
         stashPendingProfileDraft(draft);
         setSignInOpen(true);
         setPublishStatus("idle");
+        return;
+      }
+      if (response.status === 422) {
+        const data = await response.json().catch(() => null);
+        setErrorMessage(
+          data?.reason ??
+            data?.details?.join(" ") ??
+            "That doesn't look right — please double check your details."
+        );
+        setPublishStatus("error");
         return;
       }
       if (!response.ok) {
@@ -111,6 +132,9 @@ export function ProfileDraftCard({
               aria-label="Your name"
             />
           </CardTitle>
+          {draft.name.trim().length > 0 && !isValidName(draft.name) && (
+            <p className="text-xs text-danger">Full name is required.</p>
+          )}
         </CardHeader>
         <CardContent className="flex flex-col gap-5 text-sm">
           <div className="flex flex-col gap-1.5">
@@ -123,6 +147,13 @@ export function ProfileDraftCard({
               className={inputClass}
               aria-label="Phone or email"
             />
+            {draft.contactDetails.trim().length > 0 &&
+              !isValidContactDetails(draft.contactDetails) && (
+                <p className="text-xs text-danger">
+                  Enter a valid PH phone number (e.g. 0917 123 4567) or email
+                  address.
+                </p>
+              )}
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -274,9 +305,7 @@ export function ProfileDraftCard({
             <Button
               onClick={publish}
               className="w-full sm:w-fit"
-              disabled={
-                publishStatus === "publishing" || !draft.contactDetails.trim()
-              }
+              disabled={publishStatus === "publishing" || fieldErrors.length > 0}
             >
               <Sparkles className="size-4" />
               {publishStatus === "publishing"
@@ -302,8 +331,8 @@ export function ProfileDraftCard({
           )}
           {publishStatus === "error" && (
             <p className="text-xs text-danger">
-              Could not publish your profile. Check your connection and try
-              again.
+              {errorMessage ??
+                "Could not publish your profile. Check your connection and try again."}
             </p>
           )}
           {!user && publishStatus === "idle" && (

@@ -1,7 +1,14 @@
+import { generateObject } from "ai";
 import { draftToRow, fetchAllSeekerCandidates, rowToCandidate } from "@/lib/db/seeker-candidates-db";
+import { getAnthropicModel, isAnthropicConfigured } from "@/lib/ai/anthropic";
+import {
+  ProfilePlausibilityResultSchema,
+  buildProfilePlausibilityPrompt,
+} from "@/lib/ai/profile-moderation-prompt";
 import { getClientKey, isRateLimited } from "@/lib/rate-limit";
 import { isSupabaseConfigured, supabaseInsertOne } from "@/lib/supabase-admin";
 import { requireUser } from "@/lib/supabase/server";
+import { validateProfileDraftFields } from "@/lib/validate-profile-draft";
 import { SeekerProfileDraftSchema } from "@/types/seeker-profile-draft";
 
 export const runtime = "nodejs";
@@ -39,6 +46,34 @@ export async function POST(request: Request) {
     draft = SeekerProfileDraftSchema.parse(body.draft);
   } catch {
     return Response.json({ error: "invalid_request" }, { status: 400 });
+  }
+
+  const fieldErrors = validateProfileDraftFields(draft);
+  if (fieldErrors.length > 0) {
+    return Response.json(
+      { error: "invalid_profile", details: fieldErrors },
+      { status: 422 }
+    );
+  }
+
+  if (isAnthropicConfigured()) {
+    try {
+      const { object } = await generateObject({
+        model: getAnthropicModel(),
+        schema: ProfilePlausibilityResultSchema,
+        prompt: buildProfilePlausibilityPrompt(draft),
+      });
+      if (!object.plausible) {
+        return Response.json(
+          { error: "profile_rejected", reason: object.reason },
+          { status: 422 }
+        );
+      }
+    } catch (error) {
+      // Fail open — don't block a real person from publishing just because
+      // the moderation call itself errored (network blip, model overload).
+      console.error("profile plausibility check failed", error);
+    }
   }
 
   try {
