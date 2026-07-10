@@ -35,7 +35,11 @@ export function UserMenu() {
         <Button size="sm" variant="outline" onClick={() => setSignInOpen(true)}>
           Sign in
         </Button>
-        <SignInDialog open={signInOpen} onOpenChange={setSignInOpen} />
+        <SignInDialog
+          open={signInOpen}
+          onOpenChange={setSignInOpen}
+          next="/work"
+        />
       </>
     );
   }
