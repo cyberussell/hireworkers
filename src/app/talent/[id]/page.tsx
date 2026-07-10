@@ -11,9 +11,12 @@ import { requireUser } from "@/lib/supabase/server";
 import { PassportBody } from "@/components/passport/passport-body";
 import type { Candidate } from "@/types/candidate";
 
-export function generateStaticParams() {
-  return candidates.map((candidate) => ({ id: candidate.id }));
-}
+// Real, database-backed profiles need a fresh per-request fetch (auth-aware
+// visibility check, view counting) — mixing that with statically prerendered
+// seed pages on the same route template crashes at runtime ("Page changed
+// from static to dynamic"). The ~16 seed profiles are cheap enough to render
+// on demand too, so it's simplest to just make the whole route dynamic.
+export const dynamic = "force-dynamic";
 
 // Only real, database-backed profiles track views — the static seed
 // profiles aren't real people and have nothing to view-count.

@@ -57,7 +57,13 @@ export function SeekerDashboard() {
     return () => {
       cancelled = true;
     };
-  }, [user]);
+    // Depend on the stable id, not the `user` object itself — Supabase
+    // re-validates the session (and hands back a new object reference for
+    // the same person) whenever the tab regains focus, which would
+    // otherwise re-trigger this fetch and flash the loading state every
+    // time you switch back to this tab.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
 
   useEffect(() => {
     if (!candidate) return;

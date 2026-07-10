@@ -199,7 +199,11 @@ export function WorkExperience() {
     return () => {
       cancelled = true;
     };
-  }, [loading, user]);
+    // Stable id, not the `user` object — see the matching note in
+    // seeker-dashboard.tsx for why (Supabase hands back a new object on
+    // every tab-focus session revalidation).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, user?.id]);
 
   useEffect(() => {
     if (loading || !user || !candidateChecked) return;
