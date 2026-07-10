@@ -1,84 +1,62 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  Briefcase,
-  FileSearch,
-  MessagesSquare,
-  Sparkles,
-  UserCheck,
-  UserPlus,
-} from "lucide-react";
+import { LayoutDashboard, Rocket, Sparkles, UserPlus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "How To's — Hire Workers That Work Help",
   description:
-    "Step-by-step guides for hiring with the AI Hiring Assistant and building your profile to find work on Hire Workers That Work.",
+    "How the AI Profile Assistant builds your professional profile from a conversation — no forms, no résumé required.",
 };
 
-const EMPLOYER_STEPS = [
-  {
-    icon: Sparkles,
-    title: "Describe who you need",
-    body: "Go to Ask AI and tell the AI Hiring Assistant about the role in plain language — no forms required.",
-  },
-  {
-    icon: FileSearch,
-    title: "Review the job brief",
-    body: "The assistant turns your description into a full job brief with a suggested salary range and required skills. Edit anything before you continue.",
-  },
-  {
-    icon: UserCheck,
-    title: "Browse matched candidates",
-    body: "See a ranked list of candidates with match scores and reasons. Open a profile's Digital Work Passport to check verified skills.",
-  },
-  {
-    icon: MessagesSquare,
-    title: "Interview and hire",
-    body: "Use the AI-suggested interview questions to evaluate candidates, then reach out to make an offer.",
-  },
-];
-
-const SEEKER_STEPS = [
+const PROFILE_STEPS = [
   {
     icon: UserPlus,
-    title: "Tell us about your work",
-    body: "Go to Find Work and describe your experience, skills, and what you're looking for — the AI Profile Assistant builds your profile from your own words.",
+    title: "Sign in",
+    body: "Continue with Google, or create an account with your email — no forms to fill out first.",
   },
   {
     icon: Sparkles,
-    title: "Let AI build your profile",
-    body: "The assistant organizes your experience into a clear, professional profile that employers can search and match against.",
+    title: "Talk to the AI",
+    body: "Answer a few natural questions in English, Tagalog, or Taglish — whatever's easiest for you. No résumé needed.",
   },
   {
-    icon: Briefcase,
-    title: "Get matched to roles",
-    body: "Employers see your profile when your skills match what they need. Higher match scores mean a closer fit to the role.",
+    icon: Rocket,
+    title: "Review and publish",
+    body: "Your profile saves automatically as you go. When you're happy with it, publish it so employers browsing Find Talent can see it.",
   },
   {
-    icon: MessagesSquare,
-    title: "Respond and get hired",
-    body: "Check your Dashboard for messages from employers and respond promptly — fast replies improve your visibility.",
+    icon: LayoutDashboard,
+    title: "Keep it up to date",
+    body: "Edit anything from your dashboard anytime, and see how many people have viewed your profile.",
   },
 ];
 
 const FAQS = [
   {
-    q: "What is the AI Hiring Assistant?",
-    a: "It's the tool behind Ask AI that turns a plain-language description of who you need into a structured job brief, then matches it against candidate profiles.",
+    q: "Do I need a résumé or CV?",
+    a: "No. The AI builds your profile entirely from your answers during the conversation — there's nothing to write or upload.",
   },
   {
-    q: "How are match scores calculated?",
-    a: "Match scores compare the skills, experience, and requirements in a job brief against a candidate's profile. They're a guide to help you prioritize review, not a guarantee of fit.",
+    q: "What languages can I use?",
+    a: "English, Tagalog, or Taglish — mix and match however's natural for you. The AI follows your lead.",
   },
   {
-    q: "What does a verification badge mean?",
-    a: "It shows what has been verified about a candidate and how. It reflects only what was checked — always review a candidate's profile yourself before deciding.",
+    q: "Who can see my profile?",
+    a: "Nobody, until you publish it. Before that, it's saved privately and only visible to you.",
   },
   {
-    q: "Where do I manage my account?",
-    a: "Use the Dashboard to review activity, manage your pipeline, and access account settings.",
+    q: "Can I change my answers later?",
+    a: "Yes — open your dashboard and hit Edit. Nothing about publishing is final.",
+  },
+  {
+    q: "I don't have a Google account — can I still sign up?",
+    a: "Yes. Use \"Walang Google account? Mag-sign up gamit ang email\" on the homepage to create an account with just an email and password.",
+  },
+  {
+    q: "How do I sign out?",
+    a: "Click your name in the top-right corner of any page, then Sign out.",
   },
 ];
 
@@ -90,48 +68,14 @@ export default function HelpPage() {
           How To&apos;s
         </h1>
         <p className="text-sm text-muted-foreground">
-          Quick guides to get the most out of Hire Workers That Work.
+          Quick guide to building your professional profile with the AI.
         </p>
       </div>
 
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-lg font-semibold tracking-tight">
-            For Employers: How to Hire
-          </h2>
-          <Button
-            variant="ghost"
-            size="sm"
-            nativeButton={false}
-            render={<Link href="/hire" />}
-          >
-            Ask AI
-          </Button>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {EMPLOYER_STEPS.map((step, i) => (
-            <Card key={step.title}>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-                    {i + 1}
-                  </span>
-                  {step.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-2 text-sm text-muted-foreground">
-                <step.icon className="size-4 text-foreground/60" />
-                {step.body}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-4">
-        <div className="flex items-center justify-between gap-4">
-          <h2 className="text-lg font-semibold tracking-tight">
-            For Job Seekers: How to Find Work
+            How to Build Your Profile
           </h2>
           <Button
             variant="ghost"
@@ -139,11 +83,11 @@ export default function HelpPage() {
             nativeButton={false}
             render={<Link href="/work" />}
           >
-            Find Work
+            Get started
           </Button>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
-          {SEEKER_STEPS.map((step, i) => (
+          {PROFILE_STEPS.map((step, i) => (
             <Card key={step.title}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">

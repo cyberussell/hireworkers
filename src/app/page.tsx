@@ -27,9 +27,9 @@ export default async function Home() {
           <Image
             src="/hireworker-logo.png"
             alt=""
-            width={56}
-            height={56}
-            className="size-12 lg:size-14"
+            width={112}
+            height={112}
+            className="size-20 sm:size-24 lg:size-28"
             priority
           />
           <div className="flex flex-col gap-4">
