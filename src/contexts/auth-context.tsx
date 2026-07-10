@@ -90,12 +90,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function signOut() {
     const supabase = createClient();
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      // Still force the navigation below even if the Supabase call itself
+      // fails (network blip, etc.) — getting the user unstuck matters more
+      // here than surfacing this error.
+      console.error("sign out request failed", error);
+    }
     // A full navigation (not just the reactive context update) guarantees
     // every cached Server Component render and client route is thrown away
     // — otherwise a page fetched while signed in can keep showing
-    // signed-in content until its next unrelated re-render.
-    window.location.href = "/";
+    // signed-in content until its next unrelated re-render. `replace` (not
+    // `href`) so this doesn't leave a stale signed-in entry in back-history.
+    window.location.replace("/");
   }
 
   return (
