@@ -20,7 +20,7 @@ export default async function Home() {
   const publishedCount = await getPublishedCount();
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col items-center px-4 py-16 sm:px-6 lg:py-24">
+    <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-16 px-4 py-16 sm:px-6 lg:gap-20 lg:py-24">
       <HomeAuthRedirect />
       <div className="flex w-full flex-col items-center gap-12 lg:flex-row lg:items-center lg:gap-16">
         <div className="flex w-full flex-col items-center gap-6 text-center lg:w-[45%] lg:items-start lg:text-left">

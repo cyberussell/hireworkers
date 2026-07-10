@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { PassportHeader } from "@/components/passport/passport-header";
 import { AiFitSummary } from "@/components/passport/ai-fit-summary";
 import { SkillsSection } from "@/components/passport/skills-section";
@@ -9,18 +9,31 @@ import { AssessmentsSection } from "@/components/passport/assessments-section";
 import { AvailabilityCard } from "@/components/passport/availability-card";
 import { VerifiedIdentity } from "@/components/passport/verified-identity";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 import type { Candidate } from "@/types/candidate";
 
-export function PassportBody({ candidate }: { candidate: Candidate }) {
+export function PassportBody({
+  candidate,
+  isOwner = false,
+}: {
+  candidate: Candidate;
+  isOwner?: boolean;
+}) {
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6">
-      <Link
-        href="/talent"
-        className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-3.5" />
-        Back to Find Talent
-      </Link>
+      {isOwner && (
+        <div className="mb-6 flex justify-end">
+          <Button
+            size="sm"
+            variant="outline"
+            nativeButton={false}
+            render={<Link href="/work" />}
+          >
+            <Pencil className="size-3.5" />
+            Edit profile
+          </Button>
+        </div>
+      )}
 
       <PassportHeader candidate={candidate} />
 

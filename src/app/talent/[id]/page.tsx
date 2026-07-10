@@ -36,19 +36,26 @@ async function findCandidate(
 
 // A saved-but-not-yet-published profile shouldn't be reachable by anyone
 // but its owner, even with a direct link — treat it as not found otherwise.
-async function resolveVisibleCandidate(
-  id: string
-): Promise<{ candidate: Candidate; isSeed: boolean } | null> {
+// Also figures out ownership once here so the page doesn't have to look it
+// up again for view-counting or showing an Edit button.
+async function resolveVisibleCandidate(id: string): Promise<{
+  candidate: Candidate;
+  isSeed: boolean;
+  isOwner: boolean;
+} | null> {
   const found = await findCandidate(id);
   if (!found) return null;
-  if (found.isSeed || found.candidate.published) return found;
+  if (found.isSeed) return { ...found, isOwner: false };
 
   const viewer = await requireUser();
-  if (!viewer) return null;
-  const ownProfile = await fetchSeekerCandidateByUserId(viewer.id).catch(
-    () => null
-  );
-  return ownProfile?.id === found.candidate.id ? found : null;
+  const ownProfile = viewer
+    ? await fetchSeekerCandidateByUserId(viewer.id).catch(() => null)
+    : null;
+  const isOwner = ownProfile?.id === found.candidate.id;
+
+  if (!found.candidate.published && !isOwner) return null;
+
+  return { ...found, isOwner };
 }
 
 export async function generateMetadata({
@@ -74,12 +81,11 @@ export default async function CandidatePassportPage({
   const found = await resolveVisibleCandidate(id);
   if (!found) notFound();
 
-  if (!found.isSeed) {
-    const viewer = await requireUser();
-    incrementSeekerCandidateViews(found.candidate.id, viewer?.id ?? null).catch(
-      (error) => console.error("failed to record profile view", error)
+  if (!found.isSeed && !found.isOwner) {
+    incrementSeekerCandidateViews(found.candidate.id, null).catch((error) =>
+      console.error("failed to record profile view", error)
     );
   }
 
-  return <PassportBody candidate={found.candidate} />;
+  return <PassportBody candidate={found.candidate} isOwner={found.isOwner} />;
 }

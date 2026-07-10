@@ -18,10 +18,7 @@ export function StatsStrip({ publishedCount }: { publishedCount: number }) {
 
   return (
     <div className="flex w-full flex-wrap items-center justify-center gap-x-10 gap-y-6 border-t border-border/60 py-10">
-      <StatItem
-        value={`${workersJoined.toLocaleString()}+`}
-        label="Manggagawang Sumali"
-      />
+      <StatItem value={`${workersJoined.toLocaleString()}+`} label="Profiles" />
       <StatItem value="25+" label="Uri ng Trabaho" />
       <StatItem value="24/7" label="AI Profile Assistant" />
     </div>
