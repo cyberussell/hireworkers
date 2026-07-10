@@ -19,5 +19,7 @@ export function candidateToDraft(candidate: Candidate): SeekerProfileDraft {
     languages: candidate.languages,
     availability: candidate.availability,
     hoursPerWeek: candidate.hoursPerWeek,
+    rateType: candidate.rateType ?? "not_specified",
+    dailyRate: candidate.dailyRate,
   };
 }

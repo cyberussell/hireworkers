@@ -1,7 +1,8 @@
 import { streamText, type ModelMessage } from "ai";
 import { getAnthropicModel, isAnthropicConfigured } from "@/lib/ai/anthropic";
-import { SEEKER_CONVERSATION_SYSTEM_PROMPT } from "@/lib/ai/seeker-prompt";
+import { buildSeekerSystemPrompt } from "@/lib/ai/seeker-prompt";
 import { getClientKey, isRateLimited } from "@/lib/rate-limit";
+import { requireUser } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
@@ -13,6 +14,11 @@ type WorkRequestMessage = {
 export async function POST(request: Request) {
   if (!isAnthropicConfigured()) {
     return Response.json({ error: "ai_not_configured" }, { status: 503 });
+  }
+
+  const user = await requireUser();
+  if (!user) {
+    return Response.json({ error: "unauthorized" }, { status: 401 });
   }
 
   if (isRateLimited(getClientKey(request))) {
@@ -35,9 +41,13 @@ export async function POST(request: Request) {
     content: message.content,
   }));
 
+  const name =
+    (user.user_metadata?.full_name as string | undefined) ??
+    (user.user_metadata?.name as string | undefined);
+
   const result = streamText({
     model: getAnthropicModel(),
-    system: SEEKER_CONVERSATION_SYSTEM_PROMPT,
+    system: buildSeekerSystemPrompt({ name, email: user.email }),
     messages: modelMessages,
   });
 

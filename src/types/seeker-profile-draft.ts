@@ -48,6 +48,15 @@ export const SeekerProfileDraftSchema = z.object({
     "not_available",
   ]),
   hoursPerWeek: z.enum(["full_time", "part_time", "flexible"]),
+  rateType: z
+    .enum(["daily", "contract", "not_specified"])
+    .describe(
+      "'daily' if they gave a day rate, 'contract' if paid per project, 'not_specified' if pay wasn't discussed"
+    ),
+  dailyRate: z
+    .number()
+    .optional()
+    .describe("PHP amount per day — only if rateType is 'daily' and a number was given"),
   workSetupNote: z
     .string()
     .optional()

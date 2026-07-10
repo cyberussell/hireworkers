@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { Check, Sparkles, UserRound } from "lucide-react";
 import {
@@ -35,8 +34,9 @@ import {
 } from "@/lib/validate-profile-draft";
 
 const inputClass =
-  "w-full rounded-md border border-border bg-background px-2.5 py-1.5 text-sm";
+  "w-full rounded-md border border-border bg-background px-3 py-2 text-base";
 const selectClass = inputClass;
+const labelClass = "text-sm font-medium text-muted-foreground";
 
 function linesToArray(value: string) {
   return value
@@ -50,6 +50,15 @@ const AVAILABILITY_OPTIONS: { value: Availability; label: string }[] = [
   { value: "within_2_weeks", label: "Within 2 weeks" },
   { value: "within_month", label: "Within a month" },
   { value: "not_available", label: "Not available right now" },
+];
+
+const RATE_TYPE_OPTIONS: {
+  value: SeekerProfileDraft["rateType"];
+  label: string;
+}[] = [
+  { value: "daily", label: "Per day" },
+  { value: "contract", label: "Per contract/project" },
+  { value: "not_specified", label: "Not sure yet" },
 ];
 
 export function ProfileDraftCard({
@@ -75,6 +84,10 @@ export function ProfileDraftCard({
 
   const fieldErrors = validateProfileDraftFields(draft);
   const isEdit = variant === "edit";
+  const hourlyRate =
+    draft.rateType === "daily" && draft.dailyRate
+      ? Math.round((draft.dailyRate / 8) * 100) / 100
+      : null;
 
   function update<K extends keyof SeekerProfileDraft>(
     key: K,
@@ -127,25 +140,25 @@ export function ProfileDraftCard({
     >
       <Card className="mx-auto w-full max-w-2xl gap-4">
         <CardHeader className="gap-1">
-          <div className="flex items-center gap-2 text-xs font-medium text-primary">
-            <UserRound className="size-3.5" />
+          <div className="flex items-center gap-2 text-sm font-medium text-primary">
+            <UserRound className="size-4" />
             Your Profile
           </div>
           <CardTitle>
             <input
               value={draft.name}
               onChange={(event) => update("name", event.target.value)}
-              className={`${inputClass} text-lg font-semibold`}
+              className={`${inputClass} text-xl font-semibold`}
               aria-label="Your name"
             />
           </CardTitle>
           {draft.name.trim().length > 0 && !isValidName(draft.name) && (
-            <p className="text-xs text-danger">Full name is required.</p>
+            <p className="text-sm text-danger">Full name is required.</p>
           )}
         </CardHeader>
-        <CardContent className="flex flex-col gap-5 text-sm">
+        <CardContent className="flex flex-col gap-5 text-base">
           <div className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-muted-foreground">
+            <span className={labelClass}>
               Phone or email (so employers can reach you)
             </span>
             <input
@@ -156,7 +169,7 @@ export function ProfileDraftCard({
             />
             {draft.contactDetails.trim().length > 0 &&
               !isValidContactDetails(draft.contactDetails) && (
-                <p className="text-xs text-danger">
+                <p className="text-sm text-danger">
                   Enter a valid PH phone number (e.g. 0917 123 4567) or email
                   address.
                 </p>
@@ -165,9 +178,7 @@ export function ProfileDraftCard({
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-1.5">
-              <span className="text-xs font-medium text-muted-foreground">
-                What kind of work
-              </span>
+              <span className={labelClass}>What kind of work</span>
               <input
                 value={draft.professionalTitle}
                 onChange={(event) =>
@@ -178,9 +189,7 @@ export function ProfileDraftCard({
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="text-xs font-medium text-muted-foreground">
-                Category
-              </span>
+              <span className={labelClass}>Category</span>
               <select
                 value={draft.category}
                 onChange={(event) =>
@@ -200,24 +209,20 @@ export function ProfileDraftCard({
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-muted-foreground">
-              About you
-            </span>
+            <span className={labelClass}>About you</span>
             <Textarea
               value={draft.professionalSummary}
               onChange={(event) =>
                 update("professionalSummary", event.target.value)
               }
               rows={3}
-              className="text-sm"
+              className="text-base"
             />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-1.5">
-              <span className="text-xs font-medium text-muted-foreground">
-                City
-              </span>
+              <span className={labelClass}>City</span>
               <input
                 value={draft.location}
                 onChange={(event) => update("location", event.target.value)}
@@ -226,9 +231,7 @@ export function ProfileDraftCard({
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="text-xs font-medium text-muted-foreground">
-                Years doing this work
-              </span>
+              <span className={labelClass}>Years doing this work</span>
               <input
                 type="number"
                 min={0}
@@ -243,7 +246,7 @@ export function ProfileDraftCard({
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-muted-foreground">
+            <span className={labelClass}>
               Address (barangay/street, city) — helps match you with nearby
               employers, not shown publicly
             </span>
@@ -255,17 +258,60 @@ export function ProfileDraftCard({
             />
           </div>
 
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="flex flex-col gap-1.5">
+              <span className={labelClass}>How you charge</span>
+              <select
+                value={draft.rateType}
+                onChange={(event) =>
+                  update(
+                    "rateType",
+                    event.target.value as SeekerProfileDraft["rateType"]
+                  )
+                }
+                className={selectClass}
+              >
+                {RATE_TYPE_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {draft.rateType === "daily" && (
+              <div className="flex flex-col gap-1.5">
+                <span className={labelClass}>Rate per day (PHP)</span>
+                <input
+                  type="number"
+                  min={0}
+                  value={draft.dailyRate ?? ""}
+                  onChange={(event) =>
+                    update(
+                      "dailyRate",
+                      event.target.value ? Number(event.target.value) : undefined
+                    )
+                  }
+                  className={inputClass}
+                  aria-label="Rate per day in PHP"
+                />
+                {hourlyRate !== null && (
+                  <span className="text-sm text-muted-foreground">
+                    ≈ ₱{hourlyRate.toLocaleString()} / hour
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+
           <div className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-muted-foreground">
-              Skills (one per line)
-            </span>
+            <span className={labelClass}>Skills (one per line)</span>
             <Textarea
               value={draft.skills.join("\n")}
               onChange={(event) =>
                 update("skills", linesToArray(event.target.value))
               }
               rows={Math.max(3, draft.skills.length)}
-              className="text-sm"
+              className="text-base"
             />
             <div className="flex flex-wrap gap-1.5">
               {draft.skills.map((skill) => (
@@ -278,9 +324,7 @@ export function ProfileDraftCard({
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-1.5">
-              <span className="text-xs font-medium text-muted-foreground">
-                When can you start
-              </span>
+              <span className={labelClass}>When can you start</span>
               <select
                 value={draft.availability}
                 onChange={(event) =>
@@ -296,9 +340,7 @@ export function ProfileDraftCard({
               </select>
             </div>
             <div className="flex flex-col gap-1.5">
-              <span className="text-xs font-medium text-muted-foreground">
-                Schedule
-              </span>
+              <span className={labelClass}>Schedule</span>
               <select
                 value={draft.hoursPerWeek}
                 onChange={(event) =>
@@ -319,7 +361,7 @@ export function ProfileDraftCard({
           {publishStatus === "published" ? (
             <Button disabled variant="outline" className="w-full sm:w-fit">
               <Check className="size-4" />
-              {isEdit ? "Changes saved" : "Profile published"}
+              {isEdit ? "Changes saved" : "Profile saved"}
             </Button>
           ) : (
             <Button
@@ -329,38 +371,26 @@ export function ProfileDraftCard({
             >
               <Sparkles className="size-4" />
               {publishStatus === "publishing"
-                ? isEdit
-                  ? "Saving…"
-                  : "Publishing…"
+                ? "Saving…"
                 : isEdit
                   ? "Save changes"
-                  : "Publish my profile"}
+                  : "Save my profile"}
             </Button>
           )}
           {publishStatus === "published" && !isEdit && (
-            <p className="text-xs text-muted-foreground">
-              Live — visible to any employer browsing{" "}
-              <Link href="/talent" className="text-primary underline underline-offset-2">
-                Find Talent
-              </Link>
-              . Head to{" "}
-              <Link
-                href="/work/dashboard"
-                className="text-primary underline underline-offset-2"
-              >
-                your dashboard
-              </Link>{" "}
-              to see how many people have viewed it.
+            <p className="text-sm text-muted-foreground">
+              Saved privately — you can publish it so employers can find you
+              from your dashboard.
             </p>
           )}
           {publishStatus === "error" && (
-            <p className="text-xs text-danger">
+            <p className="text-sm text-danger">
               {errorMessage ??
                 "Could not save your profile. Check your connection and try again."}
             </p>
           )}
           {!user && publishStatus === "idle" && (
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               You&apos;ll be asked to sign in with Google or your email before
               this goes live.
             </p>

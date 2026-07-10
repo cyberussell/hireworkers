@@ -77,9 +77,10 @@ export async function POST(request: Request) {
   }
 
   try {
+    const avatarUrl = user.user_metadata?.avatar_url as string | undefined;
     const row = await supabaseInsertOne<Parameters<typeof rowToCandidate>[0]>(
       "seeker_candidates",
-      draftToRow(draft, user.id)
+      draftToRow(draft, user.id, avatarUrl)
     );
     return Response.json({ candidate: rowToCandidate(row) }, { status: 201 });
   } catch (error) {

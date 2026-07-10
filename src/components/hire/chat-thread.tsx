@@ -45,7 +45,7 @@ export function ChatThread({
                   <User className="size-3.5" />
                 </div>
               )}
-              <div className="flex-1 pt-0.5 text-sm leading-relaxed whitespace-pre-wrap">
+              <div className="flex-1 pt-0.5 text-base leading-relaxed whitespace-pre-wrap">
                 {message.content || (showTypingCursor ? "" : "")}
                 {showTypingCursor && (
                   <span className="ml-0.5 inline-block h-4 w-1.5 animate-pulse bg-foreground/60 align-middle" />

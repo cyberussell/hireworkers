@@ -29,6 +29,10 @@ interface SeekerCandidateRow {
   featured: boolean;
   contact_details: string;
   profile_views: number | null;
+  rate_type: string | null;
+  daily_rate: number | null;
+  avatar_url: string | null;
+  published: boolean | null;
 }
 
 export function rowToCandidate(row: SeekerCandidateRow): Candidate {
@@ -60,6 +64,10 @@ export function rowToCandidate(row: SeekerCandidateRow): Candidate {
     contactDetails: row.contact_details,
     address: row.address ?? undefined,
     profileViews: row.profile_views ?? 0,
+    rateType: (row.rate_type ?? "not_specified") as Candidate["rateType"],
+    dailyRate: row.daily_rate ?? undefined,
+    avatarUrl: row.avatar_url ?? undefined,
+    published: row.published ?? true,
   };
 }
 
@@ -73,12 +81,24 @@ export async function fetchSeekerCandidateById(
   return rows[0] ? rowToCandidate(rows[0]) : null;
 }
 
+// Only published profiles are visible to employers browsing Find Talent —
+// a saved-but-not-yet-published profile is only reachable by its owner via
+// fetchSeekerCandidateByUserId.
 export async function fetchAllSeekerCandidates(): Promise<Candidate[]> {
   const rows = await supabaseSelect<SeekerCandidateRow>(
     "seeker_candidates",
-    "select=*&order=created_at.desc"
+    "select=*&published=eq.true&order=created_at.desc"
   );
   return rows.map(rowToCandidate);
+}
+
+// Homepage stat strip only needs a count, not full rows.
+export async function countPublishedSeekerCandidates(): Promise<number> {
+  const rows = await supabaseSelect<{ id: string }>(
+    "seeker_candidates",
+    "select=id&published=eq.true"
+  );
+  return rows.length;
 }
 
 export async function fetchSeekerCandidateByUserId(
@@ -120,6 +140,8 @@ function draftToUpdatePatch(draft: SeekerProfileDraft) {
     availability: draft.availability,
     hours_per_week: draft.hoursPerWeek,
     contact_details: draft.contactDetails,
+    rate_type: draft.rateType,
+    daily_rate: draft.rateType === "daily" ? draft.dailyRate ?? null : null,
   };
 }
 
@@ -131,6 +153,17 @@ export async function updateSeekerCandidateProfile(
     "seeker_candidates",
     `user_id=eq.${userId}`,
     draftToUpdatePatch(draft)
+  );
+  return row ? rowToCandidate(row) : null;
+}
+
+export async function publishSeekerCandidate(
+  userId: string
+): Promise<Candidate | null> {
+  const row = await supabaseUpdateOne<SeekerCandidateRow>(
+    "seeker_candidates",
+    `user_id=eq.${userId}`,
+    { published: true }
   );
   return row ? rowToCandidate(row) : null;
 }
@@ -157,12 +190,17 @@ export async function incrementSeekerCandidateViews(
   );
 }
 
-export function draftToRow(draft: SeekerProfileDraft, userId: string) {
+export function draftToRow(
+  draft: SeekerProfileDraft,
+  userId: string,
+  avatarUrl?: string | null
+) {
   return {
     name: draft.name,
     professional_title: draft.professionalTitle,
     category: draft.category,
     avatar_seed: draft.name,
+    avatar_url: avatarUrl ?? null,
     professional_summary: draft.professionalSummary,
     location: draft.location,
     address: draft.address,
@@ -177,10 +215,15 @@ export function draftToRow(draft: SeekerProfileDraft, userId: string) {
     assessments: { skillAssessments: [] },
     availability: draft.availability,
     hours_per_week: draft.hoursPerWeek,
+    rate_type: draft.rateType,
+    daily_rate: draft.rateType === "daily" ? draft.dailyRate ?? null : null,
     response_rate: 0,
     response_time_hours: 0,
     references: [],
     contact_details: draft.contactDetails,
     user_id: userId,
+    // Saved privately by default — the person explicitly publishes when
+    // they're ready for employers to find them.
+    published: false,
   };
 }

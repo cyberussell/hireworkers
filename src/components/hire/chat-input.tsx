@@ -43,7 +43,7 @@ export function ChatInput({
         placeholder="Type your answer…"
         rows={1}
         disabled={disabled}
-        className="max-h-40 min-h-9 resize-none border-0 bg-transparent p-2 text-sm shadow-none focus-visible:ring-0"
+        className="max-h-40 min-h-9 resize-none border-0 bg-transparent p-2 text-base shadow-none focus-visible:ring-0"
       />
       <Button
         type="submit"

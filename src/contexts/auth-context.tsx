@@ -55,6 +55,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       provider,
       options: {
         redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
+        // Without this, Google silently re-authenticates with whichever
+        // Google account still has an active browser session — after
+        // signing out of HireWorkers, clicking "Continue with Google"
+        // again can look like sign-out "didn't work" because it skips
+        // straight back in with no account picker.
+        queryParams:
+          provider === "google" ? { prompt: "select_account" } : undefined,
       },
     });
     return error?.message ?? null;
@@ -84,6 +91,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function signOut() {
     const supabase = createClient();
     await supabase.auth.signOut();
+    // A full navigation (not just the reactive context update) guarantees
+    // every cached Server Component render and client route is thrown away
+    // — otherwise a page fetched while signed in can keep showing
+    // signed-in content until its next unrelated re-render.
+    window.location.href = "/";
   }
 
   return (

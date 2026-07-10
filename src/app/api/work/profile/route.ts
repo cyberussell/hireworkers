@@ -2,6 +2,7 @@ import { generateObject } from "ai";
 import { getAnthropicModel, isAnthropicConfigured } from "@/lib/ai/anthropic";
 import { buildProfileExtractionPrompt } from "@/lib/ai/seeker-prompt";
 import { getClientKey, isRateLimited } from "@/lib/rate-limit";
+import { requireUser } from "@/lib/supabase/server";
 import { SeekerProfileDraftSchema } from "@/types/seeker-profile-draft";
 
 export const runtime = "nodejs";
@@ -14,6 +15,11 @@ type WorkRequestMessage = {
 export async function POST(request: Request) {
   if (!isAnthropicConfigured()) {
     return Response.json({ error: "ai_not_configured" }, { status: 503 });
+  }
+
+  const user = await requireUser();
+  if (!user) {
+    return Response.json({ error: "unauthorized" }, { status: 401 });
   }
 
   if (isRateLimited(getClientKey(request))) {
@@ -35,11 +41,15 @@ export async function POST(request: Request) {
     .map((m) => `${m.role === "assistant" ? "Assistant" : "Person"}: ${m.content}`)
     .join("\n");
 
+  const name =
+    (user.user_metadata?.full_name as string | undefined) ??
+    (user.user_metadata?.name as string | undefined);
+
   try {
     const { object } = await generateObject({
       model: getAnthropicModel(),
       schema: SeekerProfileDraftSchema,
-      prompt: buildProfileExtractionPrompt(transcript),
+      prompt: buildProfileExtractionPrompt(transcript, { name, email: user.email }),
     });
 
     return Response.json({ draft: object });

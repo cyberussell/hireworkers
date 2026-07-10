@@ -101,4 +101,17 @@ export interface Candidate {
   /** How many times this profile has been viewed on its public passport
    * page, shown back to the owner on their dashboard. */
   profileViews?: number;
+  /** "daily" if dailyRate is set, "contract" if paid per project, or
+   * "not_specified" if pay wasn't discussed during onboarding. */
+  rateType?: "daily" | "contract" | "not_specified";
+  /** PHP amount per day — only meaningful when rateType is "daily". An
+   * hourly rate is derived from this (÷8) wherever it's displayed, not
+   * stored separately. */
+  dailyRate?: number;
+  /** Defaults to the Google/Facebook profile photo at signup; can be
+   * replaced with a custom upload. */
+  avatarUrl?: string;
+  /** False right after the AI interview auto-saves — private until the
+   * person explicitly publishes it. Always true for seed/legacy profiles. */
+  published?: boolean;
 }

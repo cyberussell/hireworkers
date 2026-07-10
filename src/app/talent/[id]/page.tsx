@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { candidates } from "@/lib/candidates";
 import {
   fetchSeekerCandidateById,
+  fetchSeekerCandidateByUserId,
   incrementSeekerCandidateViews,
 } from "@/lib/db/seeker-candidates-db";
 import { isSupabaseConfigured } from "@/lib/supabase-admin";
@@ -30,13 +31,30 @@ async function findCandidate(
   }
 }
 
+// A saved-but-not-yet-published profile shouldn't be reachable by anyone
+// but its owner, even with a direct link — treat it as not found otherwise.
+async function resolveVisibleCandidate(
+  id: string
+): Promise<{ candidate: Candidate; isSeed: boolean } | null> {
+  const found = await findCandidate(id);
+  if (!found) return null;
+  if (found.isSeed || found.candidate.published) return found;
+
+  const viewer = await requireUser();
+  if (!viewer) return null;
+  const ownProfile = await fetchSeekerCandidateByUserId(viewer.id).catch(
+    () => null
+  );
+  return ownProfile?.id === found.candidate.id ? found : null;
+}
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const found = await findCandidate(id);
+  const found = await resolveVisibleCandidate(id);
   if (!found) return { title: "Profile — Hire Workers That Work" };
   return {
     title: `${found.candidate.name} — ${found.candidate.professionalTitle} · Hire Workers That Work`,
@@ -50,7 +68,7 @@ export default async function CandidatePassportPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const found = await findCandidate(id);
+  const found = await resolveVisibleCandidate(id);
   if (!found) notFound();
 
   if (!found.isSeed) {

@@ -1,5 +1,6 @@
 import {
   fetchSeekerCandidateByUserId,
+  publishSeekerCandidate,
   updateSeekerCandidateAssessments,
   updateSeekerCandidateProfile,
 } from "@/lib/db/seeker-candidates-db";
@@ -45,11 +46,24 @@ export async function PATCH(request: Request) {
     return Response.json({ error: "rate_limited" }, { status: 429 });
   }
 
-  let body: { assessments?: unknown; draft?: unknown };
+  let body: { assessments?: unknown; draft?: unknown; publish?: unknown };
   try {
     body = await request.json();
   } catch {
     return Response.json({ error: "invalid_request" }, { status: 400 });
+  }
+
+  if (body.publish === true) {
+    try {
+      const candidate = await publishSeekerCandidate(user.id);
+      if (!candidate) {
+        return Response.json({ error: "not_found" }, { status: 404 });
+      }
+      return Response.json({ candidate });
+    } catch (error) {
+      console.error("failed to publish own seeker candidate", error);
+      return Response.json({ error: "update_failed" }, { status: 502 });
+    }
   }
 
   if (body.draft !== undefined) {

@@ -304,6 +304,7 @@ export function WorkExperience() {
             setEditDraft(candidateToDraft(existingCandidate));
             setViewMode("edit");
           }}
+          onPublished={setExistingCandidate}
         />
       </div>
     );
