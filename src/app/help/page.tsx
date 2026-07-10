@@ -125,10 +125,10 @@ export default function HelpPage() {
         <p className="text-sm text-muted-foreground">
           Reach out at{" "}
           <a
-            href="mailto:support@hireworkers.work"
+            href="mailto:cyberussellofficial@gmail.com"
             className="text-primary underline underline-offset-2"
           >
-            support@hireworkers.work
+            cyberussellofficial@gmail.com
           </a>
         </p>
       </section>
