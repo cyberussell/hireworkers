@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
   Dialog,
@@ -22,21 +22,35 @@ export function SignInDialog({
   next = "/",
   title = "Sign in to continue",
   description = "Use your Google account, or sign in with email.",
+  defaultMode = "sign_in",
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   next?: string;
   title?: string;
   description?: string;
+  /** Which email tab shows first — e.g. pass "sign_up" when opened from a
+   * link that already said "sign up" so the person isn't asked twice. */
+  defaultMode?: Mode;
 }) {
   const router = useRouter();
   const { signInWith, signInWithEmail, signUpWithEmail } = useAuth();
-  const [mode, setMode] = useState<Mode>("sign_in");
+  const [mode, setMode] = useState<Mode>(defaultMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [confirmationSent, setConfirmationSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  // `open` is set by the parent directly (e.g. clicking a "sign up" link),
+  // which never fires `onOpenChange` — that callback only runs for the
+  // dialog's own internal close triggers (Escape, overlay click). So the
+  // mode has to be (re)synced here instead of in `close()`.
+  useEffect(() => {
+    if (!open) return;
+    const timeout = setTimeout(() => setMode(defaultMode), 0);
+    return () => clearTimeout(timeout);
+  }, [open, defaultMode]);
 
   function close(nextOpen: boolean) {
     if (!nextOpen) {
@@ -45,7 +59,6 @@ export function SignInDialog({
       setSubmitting(false);
       setEmail("");
       setPassword("");
-      setMode("sign_in");
     }
     onOpenChange(nextOpen);
   }

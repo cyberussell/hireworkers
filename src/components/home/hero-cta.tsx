@@ -8,6 +8,14 @@ import { SignInDialog } from "@/components/auth/sign-in-dialog";
 
 export function HeroCta() {
   const [signInOpen, setSignInOpen] = useState(false);
+  const [defaultMode, setDefaultMode] = useState<"sign_in" | "sign_up">(
+    "sign_in"
+  );
+
+  function openDialog(mode: "sign_in" | "sign_up") {
+    setDefaultMode(mode);
+    setSignInOpen(true);
+  }
 
   return (
     <motion.div
@@ -19,11 +27,18 @@ export function HeroCta() {
       <Button
         size="lg"
         className="h-11 px-6 text-base"
-        onClick={() => setSignInOpen(true)}
+        onClick={() => openDialog("sign_in")}
       >
         <GoogleIcon />
         Continue with Google
       </Button>
+      <button
+        type="button"
+        onClick={() => openDialog("sign_up")}
+        className="text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
+      >
+        Walang Google account? Mag-sign up gamit ang email
+      </button>
       <a
         href="#paano-gumagana"
         className="text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
@@ -36,6 +51,7 @@ export function HeroCta() {
         next="/work"
         title="Simulan ang iyong profile"
         description="Gamitin ang Google account mo, o mag-sign in gamit ang email."
+        defaultMode={defaultMode}
       />
     </motion.div>
   );
