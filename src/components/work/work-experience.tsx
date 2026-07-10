@@ -9,6 +9,9 @@ import { GenerationProgress } from "@/components/shared/generation-progress";
 import { PanelPlaceholder } from "@/components/shared/panel-placeholder";
 import { ProfileDraftCard } from "@/components/work/profile-draft-card";
 import { ProfileSummaryCard } from "@/components/work/profile-summary-card";
+import { AnnouncementsPanel } from "@/components/work/announcements-panel";
+import { IndustryRankingCard } from "@/components/work/industry-ranking-card";
+import { GrowthSuggestionsCard } from "@/components/work/growth-suggestions-card";
 import { Button } from "@/components/ui/button";
 import { SignInDialog } from "@/components/auth/sign-in-dialog";
 import { useAuth } from "@/contexts/auth-context";
@@ -307,20 +310,27 @@ export function WorkExperience() {
       );
     }
     return (
-      <div className="mx-auto w-full max-w-2xl px-4 py-10 sm:px-6">
-        <ProfileSummaryCard
-          candidate={existingCandidate}
-          onEdit={() => {
-            setEditDraft(candidateToDraft(existingCandidate));
-            setViewMode("edit");
-          }}
-          onPublished={setExistingCandidate}
-          onAvatarChanged={(avatarUrl) =>
-            setExistingCandidate((current) =>
-              current ? { ...current, avatarUrl } : current
-            )
-          }
-        />
+      <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6">
+        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[260px_1fr]">
+          <AnnouncementsPanel />
+          <div className="flex flex-col gap-6">
+            <ProfileSummaryCard
+              candidate={existingCandidate}
+              onEdit={() => {
+                setEditDraft(candidateToDraft(existingCandidate));
+                setViewMode("edit");
+              }}
+              onPublished={setExistingCandidate}
+              onAvatarChanged={(avatarUrl) =>
+                setExistingCandidate((current) =>
+                  current ? { ...current, avatarUrl } : current
+                )
+              }
+            />
+            <IndustryRankingCard />
+            <GrowthSuggestionsCard />
+          </div>
+        </div>
       </div>
     );
   }

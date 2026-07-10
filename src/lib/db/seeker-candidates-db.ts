@@ -92,6 +92,18 @@ export async function fetchAllSeekerCandidates(): Promise<Candidate[]> {
   return rows.map(rowToCandidate);
 }
 
+// Used to benchmark one candidate against others doing the same kind of
+// work — only published profiles count as the real, comparable talent pool.
+export async function fetchPublishedCandidatesByCategory(
+  category: CandidateCategory
+): Promise<Candidate[]> {
+  const rows = await supabaseSelect<SeekerCandidateRow>(
+    "seeker_candidates",
+    `select=*&published=eq.true&category=eq.${category}`
+  );
+  return rows.map(rowToCandidate);
+}
+
 // Homepage stat strip only needs a count, not full rows.
 export async function countPublishedSeekerCandidates(): Promise<number> {
   const rows = await supabaseSelect<{ id: string }>(
