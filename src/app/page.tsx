@@ -33,13 +33,23 @@ export default async function Home() {
             priority
           />
           <div className="flex flex-col gap-4">
-            <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-              Ano ang alam mong gawin?
-            </h1>
+            <div className="flex flex-col gap-1">
+              <h1 className="text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
+                May alam kang gawin?
+              </h1>
+              <p className="text-2xl font-semibold tracking-tight text-balance text-[#ffc300] sm:text-3xl lg:text-4xl">
+                Gawin nating trabaho.
+              </p>
+            </div>
+            <p className="max-w-md text-balance text-sm font-bold text-fuchsia-500 sm:text-base">
+              Karpintero, Tubero, Driver, Graphic Designer, Wedding
+              Photographer, Virtual Assistant, Dog Walker, at marami pang
+              iba.
+            </p>
             <p className="max-w-md text-balance text-base text-muted-foreground sm:text-lg">
-              Makipag-usap lang sa AI sa Tagalog, Taglish, o English.
-              Tutulungan ka nitong gawin ang iyong professional profile base
-              sa iyong kakayahan. No need ng bio-data or resume.
+              Sabihin lang kung ano ang kaya mong gawin. Gagawa ang AI ng
+              professional profile mo para mas madali kang makita ng mga
+              employer. Hindi kailangan ng diploma o resume.
             </p>
           </div>
 

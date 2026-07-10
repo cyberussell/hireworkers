@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { isAdminEmail } from "@/lib/admin";
-import { requireUser } from "@/lib/supabase/server";
-import { MissionControlPanel } from "@/components/mission-control/mission-control-panel";
+import { hasMissionControlSession } from "@/lib/mission-control-auth";
+import { MissionControlShell } from "@/components/mission-control/mission-control-shell";
+import { MissionControlLoginGate } from "@/components/mission-control/mission-control-login-gate";
 
 export const metadata: Metadata = {
   title: "Mission Control — Hire Workers That Work",
 };
 
 export default async function MissionControlPage() {
-  const user = await requireUser();
-  if (!isAdminEmail(user?.email)) {
-    notFound();
+  const hasSession = await hasMissionControlSession();
+
+  if (!hasSession) {
+    return <MissionControlLoginGate />;
   }
 
   return (
-    <div className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6">
-      <MissionControlPanel />
+    <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6">
+      <MissionControlShell />
     </div>
   );
 }

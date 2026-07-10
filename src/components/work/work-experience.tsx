@@ -7,8 +7,14 @@ import { ChatInput } from "@/components/hire/chat-input";
 import { AiUnavailableBanner } from "@/components/hire/ai-unavailable-banner";
 import { GenerationProgress } from "@/components/shared/generation-progress";
 import { PanelPlaceholder } from "@/components/shared/panel-placeholder";
-import { ProfileDraftCard } from "@/components/work/profile-draft-card";
-import { ProfilePaymentIdentityPanel } from "@/components/work/profile-payment-identity-fields";
+import {
+  ProfileDraftCard,
+  ProfileAvailabilityPanel,
+} from "@/components/work/profile-draft-card";
+import {
+  ProfilePaymentPanel,
+  ProfileIdentificationPanel,
+} from "@/components/work/profile-payment-identity-fields";
 import { ProfileSummaryCard } from "@/components/work/profile-summary-card";
 import { AnnouncementsPanel } from "@/components/work/announcements-panel";
 import { IndustryRankingCard } from "@/components/work/industry-ranking-card";
@@ -314,10 +320,17 @@ export function WorkExperience() {
                 )
               }
             />
-            <ProfilePaymentIdentityPanel
-              draft={draftValue}
-              onChange={setEditDraft}
-            />
+            <div className="flex flex-col gap-6">
+              <ProfilePaymentPanel draft={draftValue} onChange={setEditDraft} />
+              <ProfileIdentificationPanel
+                draft={draftValue}
+                onChange={setEditDraft}
+              />
+              <ProfileAvailabilityPanel
+                draft={draftValue}
+                onChange={setEditDraft}
+              />
+            </div>
           </div>
         </div>
       );

@@ -1,4 +1,4 @@
-import { fetchPendingMissingTradeRequests } from "@/lib/db/trade-catalog-db";
+import { fetchMissionControlStats } from "@/lib/db/mission-control-stats-db";
 import { hasMissionControlSession } from "@/lib/mission-control-auth";
 import { isSupabaseConfigured } from "@/lib/supabase-admin";
 
@@ -14,10 +14,10 @@ export async function GET() {
   }
 
   try {
-    const requests = await fetchPendingMissingTradeRequests();
-    return Response.json({ requests });
+    const stats = await fetchMissionControlStats();
+    return Response.json(stats);
   } catch (error) {
-    console.error("failed to list missing trade requests", error);
+    console.error("failed to compute mission control stats", error);
     return Response.json({ error: "fetch_failed" }, { status: 502 });
   }
 }

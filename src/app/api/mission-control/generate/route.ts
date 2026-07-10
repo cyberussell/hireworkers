@@ -9,9 +9,8 @@ import {
   resolveMissingTradeRequests,
   upsertTradeCatalogEntry,
 } from "@/lib/db/trade-catalog-db";
-import { isAdminEmail } from "@/lib/admin";
+import { hasMissionControlSession } from "@/lib/mission-control-auth";
 import { isSupabaseConfigured, supabaseSelect } from "@/lib/supabase-admin";
-import { requireUser } from "@/lib/supabase/server";
 import type { CandidateCategory } from "@/types/candidate";
 
 export const runtime = "nodejs";
@@ -34,8 +33,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "ai_not_configured" }, { status: 503 });
   }
 
-  const user = await requireUser();
-  if (!isAdminEmail(user?.email)) {
+  if (!(await hasMissionControlSession())) {
     return Response.json({ error: "forbidden" }, { status: 403 });
   }
 

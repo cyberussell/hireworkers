@@ -16,7 +16,7 @@ interface MissingTradeRequest {
 
 type RowStatus = "idle" | "working" | "done" | "error";
 
-export function MissionControlPanel() {
+export function MissionControlRequestsPanel() {
   const [requests, setRequests] = useState<MissingTradeRequest[] | null>(null);
   const [rowStatus, setRowStatus] = useState<Record<string, RowStatus>>({});
 
@@ -71,12 +71,10 @@ export function MissionControlPanel() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight">
-          Mission Control
-        </h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Requests</h1>
         <p className="text-sm text-muted-foreground">
           Job titles with no assessment/growth content yet — each was queued
-          when someone's profile didn&apos;t match an existing trade.
+          when someone&apos;s profile didn&apos;t match an existing trade.
         </p>
       </div>
 

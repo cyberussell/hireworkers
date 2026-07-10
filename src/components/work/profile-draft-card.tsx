@@ -24,6 +24,7 @@ import {
 import {
   PaymentMethodsField,
   GovernmentIdFields,
+  RateField,
 } from "@/components/work/profile-payment-identity-fields";
 import type { SeekerProfileDraft } from "@/types/seeker-profile-draft";
 import { stashPendingProfileDraft } from "@/lib/pending-post";
@@ -57,14 +58,76 @@ const AVAILABILITY_OPTIONS: { value: Availability; label: string }[] = [
   { value: "not_available", label: "Not available right now" },
 ];
 
-const RATE_TYPE_OPTIONS: {
-  value: SeekerProfileDraft["rateType"];
-  label: string;
-}[] = [
-  { value: "daily", label: "Per day" },
-  { value: "contract", label: "Per contract/project" },
-  { value: "not_specified", label: "Not sure yet" },
-];
+function AvailabilityFields({
+  draft,
+  onChange,
+}: {
+  draft: SeekerProfileDraft;
+  onChange: (draft: SeekerProfileDraft) => void;
+}) {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2">
+      <div className="flex flex-col gap-1.5">
+        <span className={labelClass}>When can you start</span>
+        <select
+          value={draft.availability}
+          onChange={(event) =>
+            onChange({
+              ...draft,
+              availability: event.target.value as Availability,
+            })
+          }
+          className={selectClass}
+        >
+          {AVAILABILITY_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="flex flex-col gap-1.5">
+        <span className={labelClass}>Schedule</span>
+        <select
+          value={draft.hoursPerWeek}
+          onChange={(event) =>
+            onChange({
+              ...draft,
+              hoursPerWeek:
+                event.target.value as SeekerProfileDraft["hoursPerWeek"],
+            })
+          }
+          className={selectClass}
+        >
+          <option value="full_time">Full-time</option>
+          <option value="part_time">Part-time</option>
+          <option value="flexible">Flexible / any schedule</option>
+        </select>
+      </div>
+    </div>
+  );
+}
+
+export function ProfileAvailabilityPanel({
+  draft,
+  onChange,
+}: {
+  draft: SeekerProfileDraft;
+  onChange: (draft: SeekerProfileDraft) => void;
+}) {
+  return (
+    <Card className="gap-4">
+      <CardHeader>
+        <CardTitle className="text-sm font-medium text-muted-foreground">
+          Availability
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-5 text-base">
+        <AvailabilityFields draft={draft} onChange={onChange} />
+      </CardContent>
+    </Card>
+  );
+}
 
 export function ProfileDraftCard({
   draft,
@@ -95,10 +158,6 @@ export function ProfileDraftCard({
 
   const fieldErrors = validateProfileDraftFields(draft);
   const isEdit = variant === "edit";
-  const hourlyRate =
-    draft.rateType === "daily" && draft.dailyRate
-      ? Math.round((draft.dailyRate / 8) * 100) / 100
-      : null;
 
   function update<K extends keyof SeekerProfileDraft>(
     key: K,
@@ -283,50 +342,7 @@ export function ProfileDraftCard({
             />
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="flex flex-col gap-1.5">
-              <span className={labelClass}>How you charge</span>
-              <select
-                value={draft.rateType}
-                onChange={(event) =>
-                  update(
-                    "rateType",
-                    event.target.value as SeekerProfileDraft["rateType"]
-                  )
-                }
-                className={selectClass}
-              >
-                {RATE_TYPE_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            {draft.rateType === "daily" && (
-              <div className="flex flex-col gap-1.5">
-                <span className={labelClass}>Rate per day (PHP)</span>
-                <input
-                  type="number"
-                  min={0}
-                  value={draft.dailyRate ?? ""}
-                  onChange={(event) =>
-                    update(
-                      "dailyRate",
-                      event.target.value ? Number(event.target.value) : undefined
-                    )
-                  }
-                  className={inputClass}
-                  aria-label="Rate per day in PHP"
-                />
-                {hourlyRate !== null && (
-                  <span className="text-sm text-muted-foreground">
-                    ≈ ₱{hourlyRate.toLocaleString()} / hour
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
+          {!isEdit && <RateField draft={draft} onChange={onChange} />}
 
           {!isEdit && <PaymentMethodsField draft={draft} onChange={onChange} />}
 
@@ -349,41 +365,7 @@ export function ProfileDraftCard({
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="flex flex-col gap-1.5">
-              <span className={labelClass}>When can you start</span>
-              <select
-                value={draft.availability}
-                onChange={(event) =>
-                  update("availability", event.target.value as Availability)
-                }
-                className={selectClass}
-              >
-                {AVAILABILITY_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex flex-col gap-1.5">
-              <span className={labelClass}>Schedule</span>
-              <select
-                value={draft.hoursPerWeek}
-                onChange={(event) =>
-                  update(
-                    "hoursPerWeek",
-                    event.target.value as SeekerProfileDraft["hoursPerWeek"]
-                  )
-                }
-                className={selectClass}
-              >
-                <option value="full_time">Full-time</option>
-                <option value="part_time">Part-time</option>
-                <option value="flexible">Flexible / any schedule</option>
-              </select>
-            </div>
-          </div>
+          {!isEdit && <AvailabilityFields draft={draft} onChange={onChange} />}
 
           {!isEdit && <GovernmentIdFields draft={draft} onChange={onChange} />}
 
