@@ -9,6 +9,10 @@ export function isValidContactDetails(value: string): boolean {
   return PH_PHONE_PATTERN.test(digitsOnly);
 }
 
+export function isEmailContact(value: string): boolean {
+  return EMAIL_PATTERN.test(value.trim());
+}
+
 export function isValidName(value: string): boolean {
   return value.trim().length >= 2;
 }

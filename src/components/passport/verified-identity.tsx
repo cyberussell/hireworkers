@@ -1,4 +1,5 @@
 import { Check, X } from "lucide-react";
+import { isEmailContact } from "@/lib/validate-profile-draft";
 import type { Candidate } from "@/types/candidate";
 
 const ITEMS: { key: keyof Candidate["verified"]; label: string }[] = [
@@ -9,6 +10,23 @@ const ITEMS: { key: keyof Candidate["verified"]; label: string }[] = [
 
 export function VerifiedIdentity({ candidate }: { candidate: Candidate }) {
   const hasSelfDeclaredId = Boolean(candidate.governmentIdType);
+  const contact = candidate.contactDetails?.trim();
+  const contactIsEmail = Boolean(contact) && isEmailContact(contact!);
+
+  // These reflect what the person has *provided*, not that we've confirmed
+  // it — there's no email/phone verification flow yet, only the self-
+  // declared government ID pattern this mirrors.
+  const providedPending: Partial<Record<keyof Candidate["verified"], string>> = {
+    identity: hasSelfDeclaredId ? "ID submitted — pending verification" : undefined,
+    email:
+      contact && contactIsEmail
+        ? "Email on file — pending verification"
+        : undefined,
+    phone:
+      contact && !contactIsEmail
+        ? "Number on file — pending verification"
+        : undefined,
+  };
 
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
@@ -30,9 +48,9 @@ export function VerifiedIdentity({ candidate }: { candidate: Candidate }) {
                   {item.label}
                 </span>
               </div>
-              {item.key === "identity" && !isVerified && hasSelfDeclaredId && (
+              {!isVerified && providedPending[item.key] && (
                 <p className="pl-6 text-xs text-muted-foreground">
-                  ID submitted — pending verification
+                  {providedPending[item.key]}
                 </p>
               )}
             </li>

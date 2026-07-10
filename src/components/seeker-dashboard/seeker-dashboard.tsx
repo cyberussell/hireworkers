@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { SignInDialog } from "@/components/auth/sign-in-dialog";
 import { Button } from "@/components/ui/button";
 import { PanelPlaceholder } from "@/components/shared/panel-placeholder";
+import { GenerationProgress } from "@/components/shared/generation-progress";
 import { AiUnavailableBanner } from "@/components/hire/ai-unavailable-banner";
 import { TYPING_RELEVANT_CATEGORIES } from "@/lib/assessments-catalog";
 import { AssessmentCardTyping } from "@/components/seeker-dashboard/assessment-card-typing";
@@ -20,6 +21,13 @@ import {
 import type { AssessmentGenerationResult } from "@/lib/ai/assessment-prompt";
 import type { Candidate } from "@/types/candidate";
 import type { Assessments } from "@/types/assessments";
+
+const ASSESSMENT_STAGES = [
+  "Reviewing your skills and experience…",
+  "Designing a real on-the-job scenario…",
+  "Building your tools & skills checklist…",
+  "Finalizing your assessments…",
+];
 
 export function SeekerDashboard() {
   const { user, loading } = useAuth();
@@ -210,9 +218,9 @@ export function SeekerDashboard() {
       )}
 
       {generationStatus === "loading" && (
-        <PanelPlaceholder
-          icon={UserRound}
-          message={`Building assessments for your work as a ${candidate.professionalTitle}…`}
+        <GenerationProgress
+          title={`Building assessments for your work as a ${candidate.professionalTitle}`}
+          stages={ASSESSMENT_STAGES}
         />
       )}
       {generationStatus === "ai_unavailable" && <AiUnavailableBanner />}

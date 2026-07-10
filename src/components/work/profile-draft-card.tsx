@@ -17,14 +17,14 @@ import { AvatarUpload } from "@/components/work/avatar-upload";
 import { useAuth } from "@/contexts/auth-context";
 import {
   CANDIDATE_CATEGORY_LABELS,
-  GOVERNMENT_ID_TYPE_LABELS,
-  PAYMENT_METHOD_LABELS,
   type CandidateCategory,
   type Availability,
   type Candidate,
-  type GovernmentIdType,
-  type PaymentMethod,
 } from "@/types/candidate";
+import {
+  PaymentMethodsField,
+  GovernmentIdFields,
+} from "@/components/work/profile-payment-identity-fields";
 import type { SeekerProfileDraft } from "@/types/seeker-profile-draft";
 import { stashPendingProfileDraft } from "@/lib/pending-post";
 import {
@@ -105,14 +105,6 @@ export function ProfileDraftCard({
     value: SeekerProfileDraft[K]
   ) {
     onChange({ ...draft, [key]: value });
-  }
-
-  function togglePaymentMethod(method: PaymentMethod) {
-    const current = draft.paymentMethods ?? [];
-    const next = current.includes(method)
-      ? current.filter((m) => m !== method)
-      : [...current, method];
-    update("paymentMethods", next);
   }
 
   async function submit() {
@@ -336,24 +328,7 @@ export function ProfileDraftCard({
             )}
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <span className={labelClass}>How you&apos;d like to be paid</span>
-            <div className="flex flex-wrap gap-3">
-              {(Object.entries(PAYMENT_METHOD_LABELS) as [PaymentMethod, string][]).map(
-                ([value, label]) => (
-                  <label key={value} className="flex items-center gap-1.5 text-sm">
-                    <input
-                      type="checkbox"
-                      checked={(draft.paymentMethods ?? []).includes(value)}
-                      onChange={() => togglePaymentMethod(value)}
-                      className="size-4 rounded border-border"
-                    />
-                    {label}
-                  </label>
-                )
-              )}
-            </div>
-          </div>
+          {!isEdit && <PaymentMethodsField draft={draft} onChange={onChange} />}
 
           <div className="flex flex-col gap-1.5">
             <span className={labelClass}>Skills (one per line)</span>
@@ -410,48 +385,7 @@ export function ProfileDraftCard({
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 rounded-lg border border-border bg-muted/40 p-3">
-            <span className={labelClass}>
-              Government ID (optional) — not shown publicly, doesn&apos;t
-              verify your profile by itself, just saved on file for later
-            </span>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <select
-                value={draft.governmentIdType ?? ""}
-                onChange={(event) =>
-                  update(
-                    "governmentIdType",
-                    (event.target.value || undefined) as
-                      | GovernmentIdType
-                      | undefined
-                  )
-                }
-                className={selectClass}
-                aria-label="Government ID type"
-              >
-                <option value="">Select ID type</option>
-                {(
-                  Object.entries(GOVERNMENT_ID_TYPE_LABELS) as [
-                    GovernmentIdType,
-                    string,
-                  ][]
-                ).map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-              <input
-                value={draft.governmentIdNumber ?? ""}
-                onChange={(event) =>
-                  update("governmentIdNumber", event.target.value)
-                }
-                placeholder="ID number"
-                className={inputClass}
-                aria-label="Government ID number"
-              />
-            </div>
-          </div>
+          {!isEdit && <GovernmentIdFields draft={draft} onChange={onChange} />}
 
           {publishStatus === "published" ? (
             <Button disabled variant="outline" className="w-full sm:w-fit">

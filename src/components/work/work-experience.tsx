@@ -8,6 +8,7 @@ import { AiUnavailableBanner } from "@/components/hire/ai-unavailable-banner";
 import { GenerationProgress } from "@/components/shared/generation-progress";
 import { PanelPlaceholder } from "@/components/shared/panel-placeholder";
 import { ProfileDraftCard } from "@/components/work/profile-draft-card";
+import { ProfilePaymentIdentityPanel } from "@/components/work/profile-payment-identity-fields";
 import { ProfileSummaryCard } from "@/components/work/profile-summary-card";
 import { AnnouncementsPanel } from "@/components/work/announcements-panel";
 import { IndustryRankingCard } from "@/components/work/industry-ranking-card";
@@ -288,24 +289,31 @@ export function WorkExperience() {
 
   if (existingCandidate) {
     if (viewMode === "edit") {
+      const draftValue = editDraft ?? candidateToDraft(existingCandidate);
       return (
-        <div className="mx-auto w-full max-w-2xl px-4 py-10 sm:px-6">
-          <ProfileDraftCard
-            draft={editDraft ?? candidateToDraft(existingCandidate)}
-            onChange={setEditDraft}
-            variant="edit"
-            onSaved={(candidate) => {
-              setExistingCandidate(candidate);
-              setEditDraft(null);
-              setViewMode("summary");
-            }}
-            avatarUrl={existingCandidate.avatarUrl}
-            onAvatarChanged={(avatarUrl) =>
-              setExistingCandidate((current) =>
-                current ? { ...current, avatarUrl } : current
-              )
-            }
-          />
+        <div className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6">
+          <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[1fr_320px]">
+            <ProfileDraftCard
+              draft={draftValue}
+              onChange={setEditDraft}
+              variant="edit"
+              onSaved={(candidate) => {
+                setExistingCandidate(candidate);
+                setEditDraft(null);
+                setViewMode("summary");
+              }}
+              avatarUrl={existingCandidate.avatarUrl}
+              onAvatarChanged={(avatarUrl) =>
+                setExistingCandidate((current) =>
+                  current ? { ...current, avatarUrl } : current
+                )
+              }
+            />
+            <ProfilePaymentIdentityPanel
+              draft={draftValue}
+              onChange={setEditDraft}
+            />
+          </div>
         </div>
       );
     }
