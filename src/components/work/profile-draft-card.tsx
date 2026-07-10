@@ -19,9 +19,15 @@ import {
   CANDIDATE_CATEGORY_LABELS,
   type CandidateCategory,
   type Availability,
+  type Candidate,
 } from "@/types/candidate";
 import type { SeekerProfileDraft } from "@/types/seeker-profile-draft";
 import { stashPendingProfileDraft } from "@/lib/pending-post";
+import {
+  publishProfileDraft,
+  updateProfileDraft,
+  type PublishProfileResult,
+} from "@/lib/publish-profile";
 import {
   isValidContactDetails,
   isValidName,
@@ -49,9 +55,16 @@ const AVAILABILITY_OPTIONS: { value: Availability; label: string }[] = [
 export function ProfileDraftCard({
   draft,
   onChange,
+  variant = "create",
+  onSaved,
 }: {
   draft: SeekerProfileDraft;
   onChange: (draft: SeekerProfileDraft) => void;
+  /** "create" publishes a new profile (POST); "edit" saves changes to an
+   * already-published one (PATCH) without touching portfolio, verification,
+   * or assessments. */
+  variant?: "create" | "edit";
+  onSaved?: (candidate: Candidate) => void;
 }) {
   const { user } = useAuth();
   const [publishStatus, setPublishStatus] = useState<
@@ -61,6 +74,7 @@ export function ProfileDraftCard({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const fieldErrors = validateProfileDraftFields(draft);
+  const isEdit = variant === "edit";
 
   function update<K extends keyof SeekerProfileDraft>(
     key: K,
@@ -69,7 +83,7 @@ export function ProfileDraftCard({
     onChange({ ...draft, [key]: value });
   }
 
-  async function publish() {
+  async function submit() {
     if (fieldErrors.length > 0) return;
 
     if (!user) {
@@ -80,36 +94,29 @@ export function ProfileDraftCard({
 
     setPublishStatus("publishing");
     setErrorMessage(null);
-    try {
-      const response = await fetch("/api/seeker-candidates", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ draft }),
-      });
-      if (response.status === 401) {
+    const result: PublishProfileResult = isEdit
+      ? await updateProfileDraft(draft)
+      : await publishProfileDraft(draft);
+    if (!result.ok) {
+      if (result.status === 401) {
         stashPendingProfileDraft(draft);
         setSignInOpen(true);
         setPublishStatus("idle");
         return;
       }
-      if (response.status === 422) {
-        const data = await response.json().catch(() => null);
+      if (result.status === 422) {
         setErrorMessage(
-          data?.reason ??
-            data?.details?.join(" ") ??
+          result.reason ??
             "That doesn't look right — please double check your details."
         );
         setPublishStatus("error");
         return;
       }
-      if (!response.ok) {
-        setPublishStatus("error");
-        return;
-      }
-      setPublishStatus("published");
-    } catch {
       setPublishStatus("error");
+      return;
     }
+    setPublishStatus("published");
+    onSaved?.(result.candidate);
   }
 
   return (
@@ -237,6 +244,19 @@ export function ProfileDraftCard({
 
           <div className="flex flex-col gap-1.5">
             <span className="text-xs font-medium text-muted-foreground">
+              Address (barangay/street, city) — helps match you with nearby
+              employers, not shown publicly
+            </span>
+            <input
+              value={draft.address}
+              onChange={(event) => update("address", event.target.value)}
+              className={inputClass}
+              aria-label="Address"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <span className="text-xs font-medium text-muted-foreground">
               Skills (one per line)
             </span>
             <Textarea
@@ -299,21 +319,25 @@ export function ProfileDraftCard({
           {publishStatus === "published" ? (
             <Button disabled variant="outline" className="w-full sm:w-fit">
               <Check className="size-4" />
-              Profile published
+              {isEdit ? "Changes saved" : "Profile published"}
             </Button>
           ) : (
             <Button
-              onClick={publish}
+              onClick={submit}
               className="w-full sm:w-fit"
               disabled={publishStatus === "publishing" || fieldErrors.length > 0}
             >
               <Sparkles className="size-4" />
               {publishStatus === "publishing"
-                ? "Publishing…"
-                : "Publish my profile"}
+                ? isEdit
+                  ? "Saving…"
+                  : "Publishing…"
+                : isEdit
+                  ? "Save changes"
+                  : "Publish my profile"}
             </Button>
           )}
-          {publishStatus === "published" && (
+          {publishStatus === "published" && !isEdit && (
             <p className="text-xs text-muted-foreground">
               Live — visible to any employer browsing{" "}
               <Link href="/talent" className="text-primary underline underline-offset-2">
@@ -326,18 +350,18 @@ export function ProfileDraftCard({
               >
                 your dashboard
               </Link>{" "}
-              to take a quick skills assessment.
+              to see how many people have viewed it.
             </p>
           )}
           {publishStatus === "error" && (
             <p className="text-xs text-danger">
               {errorMessage ??
-                "Could not publish your profile. Check your connection and try again."}
+                "Could not save your profile. Check your connection and try again."}
             </p>
           )}
           {!user && publishStatus === "idle" && (
             <p className="text-xs text-muted-foreground">
-              You&apos;ll be asked to sign in with Google or Facebook before
+              You&apos;ll be asked to sign in with Google or your email before
               this goes live.
             </p>
           )}
@@ -348,7 +372,7 @@ export function ProfileDraftCard({
         onOpenChange={setSignInOpen}
         next="/work"
         title="Sign in to publish your profile"
-        description="Sign in with Google or Facebook to publish it — we'll bring you right back."
+        description="Sign in to publish it — we'll bring you right back."
       />
     </motion.div>
   );

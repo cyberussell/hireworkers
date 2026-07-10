@@ -1,0 +1,120 @@
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { MapPin, Pencil, UserRound } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { CANDIDATE_CATEGORY_LABELS } from "@/types/candidate";
+import type { Candidate } from "@/types/candidate";
+
+const AVAILABILITY_LABELS: Record<Candidate["availability"], string> = {
+  immediately: "Can start now",
+  within_2_weeks: "Available within 2 weeks",
+  within_month: "Available within a month",
+  not_available: "Not available right now",
+};
+
+export function ProfileSummaryCard({
+  candidate,
+  onEdit,
+}: {
+  candidate: Candidate;
+  onEdit: () => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+    >
+      <Card className="mx-auto w-full max-w-2xl gap-4">
+        <CardHeader className="gap-1">
+          <div className="flex items-center gap-2 text-xs font-medium text-primary">
+            <UserRound className="size-3.5" />
+            Your Profile
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <CardTitle className="text-lg font-semibold">
+              {candidate.name}
+            </CardTitle>
+            <Button size="sm" variant="outline" onClick={onEdit}>
+              <Pencil className="size-3.5" />
+              Edit
+            </Button>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {candidate.professionalTitle}
+          </p>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-5 text-sm">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="secondary">
+              {CANDIDATE_CATEGORY_LABELS[candidate.category]}
+            </Badge>
+            <Badge variant="secondary">
+              {AVAILABILITY_LABELS[candidate.availability]}
+            </Badge>
+            {candidate.location && (
+              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                <MapPin className="size-3" />
+                {candidate.location}
+              </span>
+            )}
+          </div>
+
+          <p className="leading-relaxed text-foreground/90">
+            {candidate.professionalSummary}
+          </p>
+
+          <div className="flex flex-col gap-1.5">
+            <span className="text-xs font-medium text-muted-foreground">
+              Skills
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {candidate.skills.map((skill) => (
+                <Badge key={skill} variant="secondary">
+                  {skill}
+                </Badge>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-xs font-medium text-muted-foreground">
+                Years doing this work
+              </span>
+              <span>{candidate.yearsExperience}</span>
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <span className="text-xs font-medium text-muted-foreground">
+                Reach them at
+              </span>
+              <span>{candidate.contactDetails ?? "—"}</span>
+            </div>
+          </div>
+
+          <p className="text-xs text-muted-foreground">
+            Live — visible to any employer browsing{" "}
+            <Link href="/talent" className="text-primary underline underline-offset-2">
+              Find Talent
+            </Link>
+            . Head to{" "}
+            <Link
+              href="/work/dashboard"
+              className="text-primary underline underline-offset-2"
+            >
+              your dashboard
+            </Link>{" "}
+            to see how many people have viewed it.
+          </p>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+}

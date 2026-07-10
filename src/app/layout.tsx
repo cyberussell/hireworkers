@@ -18,9 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Hire Workers That Work — Hire Skills. Not Degrees.",
+  title: "Hire Workers That Work — Your AI Career Companion",
   description:
-    "Hire skilled Filipino talent — tradespeople, developers, virtual assistants, and specialists — judged on real skill, not a diploma. Describe who you need and our AI Hiring Assistant does the rest.",
+    "Talk to our AI in English, Tagalog, or Taglish and it builds your professional skill profile for you — no forms, no résumé required.",
 };
 
 export default function RootLayout({

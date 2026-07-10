@@ -1,11 +1,14 @@
 import {
   fetchSeekerCandidateByUserId,
   updateSeekerCandidateAssessments,
+  updateSeekerCandidateProfile,
 } from "@/lib/db/seeker-candidates-db";
 import { getClientKey, isRateLimited } from "@/lib/rate-limit";
 import { isSupabaseConfigured } from "@/lib/supabase-admin";
 import { requireUser } from "@/lib/supabase/server";
+import { validateProfileDraftFields } from "@/lib/validate-profile-draft";
 import { AssessmentsSchema } from "@/types/assessments";
+import { SeekerProfileDraftSchema } from "@/types/seeker-profile-draft";
 
 export const runtime = "nodejs";
 
@@ -42,9 +45,43 @@ export async function PATCH(request: Request) {
     return Response.json({ error: "rate_limited" }, { status: 429 });
   }
 
+  let body: { assessments?: unknown; draft?: unknown };
+  try {
+    body = await request.json();
+  } catch {
+    return Response.json({ error: "invalid_request" }, { status: 400 });
+  }
+
+  if (body.draft !== undefined) {
+    let draft;
+    try {
+      draft = SeekerProfileDraftSchema.parse(body.draft);
+    } catch {
+      return Response.json({ error: "invalid_request" }, { status: 400 });
+    }
+
+    const fieldErrors = validateProfileDraftFields(draft);
+    if (fieldErrors.length > 0) {
+      return Response.json(
+        { error: "invalid_profile", details: fieldErrors },
+        { status: 422 }
+      );
+    }
+
+    try {
+      const candidate = await updateSeekerCandidateProfile(user.id, draft);
+      if (!candidate) {
+        return Response.json({ error: "not_found" }, { status: 404 });
+      }
+      return Response.json({ candidate });
+    } catch (error) {
+      console.error("failed to update own seeker candidate profile", error);
+      return Response.json({ error: "update_failed" }, { status: 502 });
+    }
+  }
+
   let assessments;
   try {
-    const body = await request.json();
     assessments = AssessmentsSchema.parse(body.assessments);
   } catch {
     return Response.json({ error: "invalid_request" }, { status: 400 });

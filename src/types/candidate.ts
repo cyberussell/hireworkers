@@ -95,4 +95,10 @@ export interface Candidate {
    * passport page — there's no accounts/gating system yet, so this is
    * visible to anyone viewing the profile. */
   contactDetails?: string;
+  /** Only present on self-submitted profiles — collected during onboarding
+   * so employers/AI matching can consider proximity. Not shown publicly. */
+  address?: string;
+  /** How many times this profile has been viewed on its public passport
+   * page, shown back to the owner on their dashboard. */
+  profileViews?: number;
 }

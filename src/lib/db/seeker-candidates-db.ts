@@ -10,6 +10,7 @@ interface SeekerCandidateRow {
   avatar_seed: string;
   professional_summary: string;
   location: string;
+  address: string | null;
   years_experience: number;
   skills: string[];
   ai_skills_tags: string[];
@@ -27,6 +28,7 @@ interface SeekerCandidateRow {
   references: Candidate["references"];
   featured: boolean;
   contact_details: string;
+  profile_views: number | null;
 }
 
 export function rowToCandidate(row: SeekerCandidateRow): Candidate {
@@ -56,6 +58,8 @@ export function rowToCandidate(row: SeekerCandidateRow): Candidate {
     featured: row.featured,
     selfSubmitted: true,
     contactDetails: row.contact_details,
+    address: row.address ?? undefined,
+    profileViews: row.profile_views ?? 0,
   };
 }
 
@@ -99,6 +103,60 @@ export async function updateSeekerCandidateAssessments(
   return row ? rowToCandidate(row) : null;
 }
 
+// Deliberately narrower than draftToRow: an edit only touches the fields
+// the edit form actually exposes, so it never clobbers portfolio,
+// verification, assessments, or response stats accumulated since creation.
+function draftToUpdatePatch(draft: SeekerProfileDraft) {
+  return {
+    name: draft.name,
+    professional_title: draft.professionalTitle,
+    category: draft.category,
+    professional_summary: draft.professionalSummary,
+    location: draft.location,
+    address: draft.address,
+    years_experience: draft.yearsExperience,
+    skills: draft.skills,
+    languages: draft.languages,
+    availability: draft.availability,
+    hours_per_week: draft.hoursPerWeek,
+    contact_details: draft.contactDetails,
+  };
+}
+
+export async function updateSeekerCandidateProfile(
+  userId: string,
+  draft: SeekerProfileDraft
+): Promise<Candidate | null> {
+  const row = await supabaseUpdateOne<SeekerCandidateRow>(
+    "seeker_candidates",
+    `user_id=eq.${userId}`,
+    draftToUpdatePatch(draft)
+  );
+  return row ? rowToCandidate(row) : null;
+}
+
+// Best-effort read-then-write increment — a lost update under concurrent
+// views just means an occasional undercount, which is fine for a "people
+// have seen your profile" vanity stat. Skips the profile owner's own visits
+// so checking your own public link doesn't inflate the count.
+export async function incrementSeekerCandidateViews(
+  id: string,
+  viewerUserId: string | null
+): Promise<void> {
+  const rows = await supabaseSelect<
+    Pick<SeekerCandidateRow, "profile_views"> & { user_id: string | null }
+  >("seeker_candidates", `select=profile_views,user_id&id=eq.${id}`);
+  const row = rows[0];
+  if (!row) return;
+  if (viewerUserId && row.user_id === viewerUserId) return;
+
+  await supabaseUpdateOne<SeekerCandidateRow>(
+    "seeker_candidates",
+    `id=eq.${id}`,
+    { profile_views: (row.profile_views ?? 0) + 1 }
+  );
+}
+
 export function draftToRow(draft: SeekerProfileDraft, userId: string) {
   return {
     name: draft.name,
@@ -107,6 +165,7 @@ export function draftToRow(draft: SeekerProfileDraft, userId: string) {
     avatar_seed: draft.name,
     professional_summary: draft.professionalSummary,
     location: draft.location,
+    address: draft.address,
     years_experience: draft.yearsExperience,
     skills: draft.skills,
     ai_skills_tags: [],

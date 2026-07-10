@@ -26,6 +26,11 @@ export const SeekerProfileDraftSchema = z.object({
     .string()
     .describe("2-3 sentences in the person's own words about what they do and are good at"),
   location: z.string().describe("City, Philippines"),
+  address: z
+    .string()
+    .describe(
+      "Barangay/street and city, as specific as the person gave — used to match them with nearby employers, not shown publicly"
+    ),
   yearsExperience: z.number(),
   skills: z.array(z.string()).min(1),
   languages: z

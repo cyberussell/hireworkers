@@ -12,6 +12,11 @@ import { TYPING_RELEVANT_CATEGORIES } from "@/lib/assessments-catalog";
 import { AssessmentCardTyping } from "@/components/seeker-dashboard/assessment-card-typing";
 import { AssessmentCardChecklist } from "@/components/seeker-dashboard/assessment-card-checklist";
 import { AssessmentCardScenario } from "@/components/seeker-dashboard/assessment-card-scenario";
+import { StatTile } from "@/components/seeker-dashboard/stat-tile";
+import {
+  computePortfolioStrength,
+  computeProfileStrength,
+} from "@/lib/profile-strength";
 import type { AssessmentGenerationResult } from "@/lib/ai/assessment-prompt";
 import type { Candidate } from "@/types/candidate";
 import type { Assessments } from "@/types/assessments";
@@ -151,6 +156,8 @@ export function SeekerDashboard() {
   }
 
   const showTyping = TYPING_RELEVANT_CATEGORIES.includes(candidate.category);
+  const profileStrength = computeProfileStrength(candidate);
+  const portfolioStrength = computePortfolioStrength(candidate);
 
   return (
     <div className="flex flex-col gap-6">
@@ -168,6 +175,26 @@ export function SeekerDashboard() {
           </Link>
           .
         </p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        <StatTile
+          label="Skills"
+          value={candidate.skills.length}
+          hint={
+            candidate.skills.length > 0
+              ? `+${candidate.skills.length} today`
+              : undefined
+          }
+        />
+        <StatTile label="Projects" value={candidate.portfolio.length} />
+        <StatTile label="Portfolio" value={`${portfolioStrength}%`} />
+        <StatTile label="Profile Strength" value={`${profileStrength}%`} />
+        <StatTile
+          label="Profile Views"
+          value={candidate.profileViews ?? 0}
+          hint="people have seen your profile"
+        />
       </div>
 
       {saveError && (

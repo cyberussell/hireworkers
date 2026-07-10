@@ -2,8 +2,9 @@
 
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, User } from "lucide-react";
+import { User } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { AiAvatar } from "@/components/shared/ai-avatar";
 import type { ChatMessage } from "@/types/chat";
 
 export function ChatThread({
@@ -34,20 +35,16 @@ export function ChatThread({
               transition={{ duration: 0.25 }}
               className="flex items-start gap-3"
             >
-              <div
-                className={
-                  message.role === "assistant"
-                    ? "flex size-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"
-                    : "flex size-7 shrink-0 items-center justify-center rounded-full bg-muted text-foreground"
-                }
-                aria-hidden="true"
-              >
-                {message.role === "assistant" ? (
-                  <Sparkles className="size-3.5" />
-                ) : (
+              {message.role === "assistant" ? (
+                <AiAvatar className="size-7" />
+              ) : (
+                <div
+                  className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted text-foreground"
+                  aria-hidden="true"
+                >
                   <User className="size-3.5" />
-                )}
-              </div>
+                </div>
+              )}
               <div className="flex-1 pt-0.5 text-sm leading-relaxed whitespace-pre-wrap">
                 {message.content || (showTypingCursor ? "" : "")}
                 {showTypingCursor && (
