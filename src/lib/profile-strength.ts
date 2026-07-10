@@ -9,6 +9,10 @@ const STRENGTH_FIELDS: Array<(candidate: Candidate) => boolean> = [
   (c) => c.yearsExperience > 0,
   (c) => c.skills.length > 0,
   (c) => c.availability !== "not_available",
+  // Self-declared only — not the same as being verified. Still counts
+  // toward completeness so it's a natural next thing to nudge them to do.
+  (c) => Boolean(c.governmentIdType && c.governmentIdNumber?.trim()),
+  (c) => (c.paymentMethods?.length ?? 0) > 0,
 ];
 
 export function computeProfileStrength(candidate: Candidate): number {

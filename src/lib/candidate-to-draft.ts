@@ -21,5 +21,8 @@ export function candidateToDraft(candidate: Candidate): SeekerProfileDraft {
     hoursPerWeek: candidate.hoursPerWeek,
     rateType: candidate.rateType ?? "not_specified",
     dailyRate: candidate.dailyRate,
+    governmentIdType: candidate.governmentIdType,
+    governmentIdNumber: candidate.governmentIdNumber,
+    paymentMethods: candidate.paymentMethods ?? [],
   };
 }

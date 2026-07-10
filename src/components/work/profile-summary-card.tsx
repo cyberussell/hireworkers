@@ -13,7 +13,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AvatarUpload } from "@/components/work/avatar-upload";
-import { CANDIDATE_CATEGORY_LABELS } from "@/types/candidate";
+import {
+  CANDIDATE_CATEGORY_LABELS,
+  GOVERNMENT_ID_TYPE_LABELS,
+  PAYMENT_METHOD_LABELS,
+} from "@/types/candidate";
 import type { Candidate } from "@/types/candidate";
 import { publishSavedProfile } from "@/lib/publish-profile";
 
@@ -146,6 +150,28 @@ export function ProfileSummaryCard({
                 Reach them at
               </span>
               <span>{candidate.contactDetails ?? "—"}</span>
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <span className="text-sm font-medium text-muted-foreground">
+                Payment methods
+              </span>
+              <span>
+                {candidate.paymentMethods?.length
+                  ? candidate.paymentMethods
+                      .map((method) => PAYMENT_METHOD_LABELS[method])
+                      .join(", ")
+                  : "Not specified yet"}
+              </span>
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <span className="text-sm font-medium text-muted-foreground">
+                Government ID
+              </span>
+              <span>
+                {candidate.governmentIdType
+                  ? `${GOVERNMENT_ID_TYPE_LABELS[candidate.governmentIdType]} on file`
+                  : "Not on file yet"}
+              </span>
             </div>
           </div>
 

@@ -33,6 +33,9 @@ interface SeekerCandidateRow {
   daily_rate: number | null;
   avatar_url: string | null;
   published: boolean | null;
+  government_id_type: string | null;
+  government_id_number: string | null;
+  payment_methods: string[] | null;
 }
 
 export function rowToCandidate(row: SeekerCandidateRow): Candidate {
@@ -68,6 +71,12 @@ export function rowToCandidate(row: SeekerCandidateRow): Candidate {
     dailyRate: row.daily_rate ?? undefined,
     avatarUrl: row.avatar_url ?? undefined,
     published: row.published ?? true,
+    governmentIdType: (row.government_id_type ??
+      undefined) as Candidate["governmentIdType"],
+    governmentIdNumber: row.government_id_number ?? undefined,
+    paymentMethods: (row.payment_methods ?? undefined) as
+      | Candidate["paymentMethods"]
+      | undefined,
   };
 }
 
@@ -154,6 +163,9 @@ function draftToUpdatePatch(draft: SeekerProfileDraft) {
     contact_details: draft.contactDetails,
     rate_type: draft.rateType,
     daily_rate: draft.rateType === "daily" ? draft.dailyRate ?? null : null,
+    government_id_type: draft.governmentIdType ?? null,
+    government_id_number: draft.governmentIdNumber ?? null,
+    payment_methods: draft.paymentMethods ?? [],
   };
 }
 
@@ -249,5 +261,10 @@ export function draftToRow(
     // Saved privately by default — the person explicitly publishes when
     // they're ready for employers to find them.
     published: false,
+    // Never collected during the AI interview — filled in later, if ever,
+    // from the edit screen.
+    government_id_type: draft.governmentIdType ?? null,
+    government_id_number: draft.governmentIdNumber ?? null,
+    payment_methods: draft.paymentMethods ?? [],
   };
 }

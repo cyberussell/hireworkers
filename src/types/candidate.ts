@@ -27,6 +27,38 @@ export type Availability =
   | "within_month"
   | "not_available";
 
+export type GovernmentIdType =
+  | "national_id"
+  | "sss"
+  | "drivers_license"
+  | "senior_citizen_id"
+  | "school_id"
+  | "other";
+
+export const GOVERNMENT_ID_TYPE_LABELS: Record<GovernmentIdType, string> = {
+  national_id: "National ID (PhilSys)",
+  sss: "SSS ID",
+  drivers_license: "Driver's License",
+  senior_citizen_id: "Senior Citizen ID",
+  school_id: "School ID",
+  other: "Other government ID",
+};
+
+export type PaymentMethod =
+  | "gcash"
+  | "cash"
+  | "bank_transfer"
+  | "money_transfer"
+  | "other";
+
+export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+  gcash: "GCash",
+  cash: "Cash",
+  bank_transfer: "Bank Transfer",
+  money_transfer: "Money Transfer (e.g. padala)",
+  other: "Other",
+};
+
 export interface Candidate {
   id: string;
   name: string;
@@ -114,4 +146,12 @@ export interface Candidate {
   /** False right after the AI interview auto-saves — private until the
    * person explicitly publishes it. Always true for seed/legacy profiles. */
   published?: boolean;
+  /** Self-declared, filled in from the edit screen whenever the person
+   * wants — NOT proof, and does not set verified.identity. That flag is
+   * reserved for a future human-verifier feature; this is just a claim
+   * counted toward profile completeness. */
+  governmentIdType?: GovernmentIdType;
+  governmentIdNumber?: string;
+  /** How they'd like to be paid — shown on their profile alongside rate. */
+  paymentMethods?: PaymentMethod[];
 }

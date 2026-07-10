@@ -46,6 +46,7 @@ Rules:
 - Choose the closest matching category from the allowed list. If they're a tradesperson (electrician, plumber, driver, construction, mechanic, welder, etc.) use "skilled_trade". If they do household, caregiving, or domestic work, use "caregiving_domestic". If they're an office/desk professional that doesn't clearly fit the other specific categories, use "general_professional".
 - Default languages to Filipino (native) and English (conversational) unless the conversation said otherwise.
 - Only include mostRecentWork if a specific past job or client was actually mentioned.
+- Leave governmentIdType, governmentIdNumber, and paymentMethods out entirely — they're never discussed in this conversation and are filled in later from the profile edit screen.
 
 Conversation:
 ${transcript}`;

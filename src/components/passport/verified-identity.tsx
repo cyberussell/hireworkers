@@ -8,6 +8,8 @@ const ITEMS: { key: keyof Candidate["verified"]; label: string }[] = [
 ];
 
 export function VerifiedIdentity({ candidate }: { candidate: Candidate }) {
+  const hasSelfDeclaredId = Boolean(candidate.governmentIdType);
+
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
       <h2 className="text-sm font-semibold text-muted-foreground">
@@ -17,15 +19,22 @@ export function VerifiedIdentity({ candidate }: { candidate: Candidate }) {
         {ITEMS.map((item) => {
           const isVerified = candidate.verified[item.key];
           return (
-            <li key={item.key} className="flex items-center gap-2 text-sm">
-              {isVerified ? (
-                <Check className="size-4 text-trust" />
-              ) : (
-                <X className="size-4 text-muted-foreground" />
+            <li key={item.key} className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-2 text-sm">
+                {isVerified ? (
+                  <Check className="size-4 text-trust" />
+                ) : (
+                  <X className="size-4 text-muted-foreground" />
+                )}
+                <span className={isVerified ? "" : "text-muted-foreground"}>
+                  {item.label}
+                </span>
+              </div>
+              {item.key === "identity" && !isVerified && hasSelfDeclaredId && (
+                <p className="pl-6 text-xs text-muted-foreground">
+                  ID submitted — pending verification
+                </p>
               )}
-              <span className={isVerified ? "" : "text-muted-foreground"}>
-                {item.label}
-              </span>
             </li>
           );
         })}

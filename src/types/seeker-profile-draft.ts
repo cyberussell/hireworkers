@@ -61,6 +61,22 @@ export const SeekerProfileDraftSchema = z.object({
     .string()
     .optional()
     .describe("Only if relevant, e.g. 'onsite in Cebu' or 'remote only' — leave blank if not discussed"),
+  // Not asked during the AI interview — filled in later from the edit
+  // screen, whenever the person wants.
+  governmentIdType: z
+    .enum([
+      "national_id",
+      "sss",
+      "drivers_license",
+      "senior_citizen_id",
+      "school_id",
+      "other",
+    ])
+    .optional(),
+  governmentIdNumber: z.string().optional(),
+  paymentMethods: z
+    .array(z.enum(["gcash", "cash", "bank_transfer", "money_transfer", "other"]))
+    .optional(),
   mostRecentWork: z
     .object({
       role: z.string(),
