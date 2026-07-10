@@ -151,11 +151,7 @@ export function ProfileSummaryCard({
 
           {candidate.published ? (
             <p className="text-sm text-muted-foreground">
-              Live — visible to any employer browsing{" "}
-              <Link href="/talent" className="text-primary underline underline-offset-2">
-                Find Talent
-              </Link>
-              . Head to{" "}
+              Live — employers can now find and see this profile. Head to{" "}
               <Link
                 href="/work/dashboard"
                 className="text-primary underline underline-offset-2"

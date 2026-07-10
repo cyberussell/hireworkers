@@ -24,7 +24,7 @@ const PROFILE_STEPS = [
   {
     icon: Rocket,
     title: "Review and publish",
-    body: "Your profile saves automatically as you go. When you're happy with it, publish it so employers browsing Find Talent can see it.",
+    body: "Your profile saves automatically as you go. When you're happy with it, publish it so employers can find and see it.",
   },
   {
     icon: LayoutDashboard,
