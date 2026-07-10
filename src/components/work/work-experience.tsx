@@ -292,6 +292,12 @@ export function WorkExperience() {
               setEditDraft(null);
               setViewMode("summary");
             }}
+            avatarUrl={existingCandidate.avatarUrl}
+            onAvatarChanged={(avatarUrl) =>
+              setExistingCandidate((current) =>
+                current ? { ...current, avatarUrl } : current
+              )
+            }
           />
         </div>
       );
@@ -305,6 +311,11 @@ export function WorkExperience() {
             setViewMode("edit");
           }}
           onPublished={setExistingCandidate}
+          onAvatarChanged={(avatarUrl) =>
+            setExistingCandidate((current) =>
+              current ? { ...current, avatarUrl } : current
+            )
+          }
         />
       </div>
     );

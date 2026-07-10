@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { SignInDialog } from "@/components/auth/sign-in-dialog";
+import { AvatarUpload } from "@/components/work/avatar-upload";
 import { useAuth } from "@/contexts/auth-context";
 import {
   CANDIDATE_CATEGORY_LABELS,
@@ -66,6 +67,8 @@ export function ProfileDraftCard({
   onChange,
   variant = "create",
   onSaved,
+  avatarUrl,
+  onAvatarChanged,
 }: {
   draft: SeekerProfileDraft;
   onChange: (draft: SeekerProfileDraft) => void;
@@ -74,6 +77,10 @@ export function ProfileDraftCard({
    * or assessments. */
   variant?: "create" | "edit";
   onSaved?: (candidate: Candidate) => void;
+  /** Only meaningful in "edit" mode — there's no row to attach a custom
+   * photo to until the profile is first saved. */
+  avatarUrl?: string;
+  onAvatarChanged?: (avatarUrl: string) => void;
 }) {
   const { user } = useAuth();
   const [publishStatus, setPublishStatus] = useState<
@@ -144,17 +151,31 @@ export function ProfileDraftCard({
             <UserRound className="size-4" />
             Your Profile
           </div>
-          <CardTitle>
-            <input
-              value={draft.name}
-              onChange={(event) => update("name", event.target.value)}
-              className={`${inputClass} text-xl font-semibold`}
-              aria-label="Your name"
+          <div className="flex items-center gap-3">
+            <AvatarUpload
+              name={draft.name || "?"}
+              avatarUrl={
+                isEdit
+                  ? avatarUrl
+                  : (user?.user_metadata?.avatar_url as string | undefined)
+              }
+              onUploaded={(url) => onAvatarChanged?.(url)}
+              editable={isEdit}
             />
-          </CardTitle>
-          {draft.name.trim().length > 0 && !isValidName(draft.name) && (
-            <p className="text-sm text-danger">Full name is required.</p>
-          )}
+            <div className="flex-1">
+              <CardTitle>
+                <input
+                  value={draft.name}
+                  onChange={(event) => update("name", event.target.value)}
+                  className={`${inputClass} text-xl font-semibold`}
+                  aria-label="Your name"
+                />
+              </CardTitle>
+              {draft.name.trim().length > 0 && !isValidName(draft.name) && (
+                <p className="text-sm text-danger">Full name is required.</p>
+              )}
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="flex flex-col gap-5 text-base">
           <div className="flex flex-col gap-1.5">

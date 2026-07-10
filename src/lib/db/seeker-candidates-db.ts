@@ -157,6 +157,18 @@ export async function updateSeekerCandidateProfile(
   return row ? rowToCandidate(row) : null;
 }
 
+export async function updateSeekerCandidateAvatar(
+  userId: string,
+  avatarUrl: string
+): Promise<Candidate | null> {
+  const row = await supabaseUpdateOne<SeekerCandidateRow>(
+    "seeker_candidates",
+    `user_id=eq.${userId}`,
+    { avatar_url: avatarUrl }
+  );
+  return row ? rowToCandidate(row) : null;
+}
+
 export async function publishSeekerCandidate(
   userId: string
 ): Promise<Candidate | null> {

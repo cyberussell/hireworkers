@@ -2,6 +2,7 @@ import {
   fetchSeekerCandidateByUserId,
   publishSeekerCandidate,
   updateSeekerCandidateAssessments,
+  updateSeekerCandidateAvatar,
   updateSeekerCandidateProfile,
 } from "@/lib/db/seeker-candidates-db";
 import { getClientKey, isRateLimited } from "@/lib/rate-limit";
@@ -46,11 +47,39 @@ export async function PATCH(request: Request) {
     return Response.json({ error: "rate_limited" }, { status: 429 });
   }
 
-  let body: { assessments?: unknown; draft?: unknown; publish?: unknown };
+  let body: {
+    assessments?: unknown;
+    draft?: unknown;
+    publish?: unknown;
+    avatarUrl?: unknown;
+  };
   try {
     body = await request.json();
   } catch {
     return Response.json({ error: "invalid_request" }, { status: 400 });
+  }
+
+  if (typeof body.avatarUrl === "string") {
+    // Only accept URLs pointing at our own Supabase Storage "avatars"
+    // bucket — never an arbitrary external image someone could post to a
+    // public profile.
+    const allowedPrefix = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/`;
+    if (!body.avatarUrl.startsWith(allowedPrefix)) {
+      return Response.json({ error: "invalid_request" }, { status: 400 });
+    }
+    try {
+      const candidate = await updateSeekerCandidateAvatar(
+        user.id,
+        body.avatarUrl
+      );
+      if (!candidate) {
+        return Response.json({ error: "not_found" }, { status: 404 });
+      }
+      return Response.json({ candidate });
+    } catch (error) {
+      console.error("failed to update own seeker candidate avatar", error);
+      return Response.json({ error: "update_failed" }, { status: 502 });
+    }
   }
 
   if (body.publish === true) {

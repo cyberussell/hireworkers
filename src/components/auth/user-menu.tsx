@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
+import { ChevronDown, LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -49,6 +49,7 @@ export function UserMenu() {
     (user.user_metadata?.name as string | undefined) ??
     user.email ??
     "Account";
+  const firstName = name.trim().split(/\s+/)[0];
   const avatarUrl = user.user_metadata?.avatar_url as string | undefined;
 
   return (
@@ -58,7 +59,7 @@ export function UserMenu() {
           <button
             type="button"
             aria-label="Account menu"
-            className="rounded-full"
+            className="flex items-center gap-1.5 rounded-full py-1 pr-2 pl-1 hover:bg-muted"
           />
         }
       >
@@ -68,6 +69,10 @@ export function UserMenu() {
             {initialsFor(name) || <UserIcon className="size-4" />}
           </AvatarFallback>
         </Avatar>
+        <span className="hidden max-w-24 truncate text-sm font-medium sm:inline">
+          {firstName}
+        </span>
+        <ChevronDown className="size-3.5 text-muted-foreground" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuLabel className="truncate">{name}</DropdownMenuLabel>

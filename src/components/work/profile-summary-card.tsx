@@ -10,9 +10,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { AvatarUpload } from "@/components/work/avatar-upload";
 import { CANDIDATE_CATEGORY_LABELS } from "@/types/candidate";
 import type { Candidate } from "@/types/candidate";
 import { publishSavedProfile } from "@/lib/publish-profile";
@@ -23,11 +23,6 @@ const AVAILABILITY_LABELS: Record<Candidate["availability"], string> = {
   within_month: "Available within a month",
   not_available: "Not available right now",
 };
-
-function initialsFor(name: string) {
-  const parts = name.trim().split(/\s+/);
-  return ((parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "")).toUpperCase();
-}
 
 function rateLabel(candidate: Candidate) {
   if (candidate.rateType === "daily" && candidate.dailyRate) {
@@ -42,10 +37,12 @@ export function ProfileSummaryCard({
   candidate,
   onEdit,
   onPublished,
+  onAvatarChanged,
 }: {
   candidate: Candidate;
   onEdit: () => void;
   onPublished?: (candidate: Candidate) => void;
+  onAvatarChanged?: (avatarUrl: string) => void;
 }) {
   const [publishing, setPublishing] = useState(false);
   const [publishError, setPublishError] = useState<string | null>(null);
@@ -78,14 +75,11 @@ export function ProfileSummaryCard({
           </div>
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <Avatar className="size-12">
-                {candidate.avatarUrl && (
-                  <AvatarImage src={candidate.avatarUrl} alt={candidate.name} />
-                )}
-                <AvatarFallback className="text-base">
-                  {initialsFor(candidate.name) || <UserRound className="size-5" />}
-                </AvatarFallback>
-              </Avatar>
+              <AvatarUpload
+                name={candidate.name}
+                avatarUrl={candidate.avatarUrl}
+                onUploaded={(url) => onAvatarChanged?.(url)}
+              />
               <div>
                 <CardTitle className="text-xl font-semibold">
                   {candidate.name}
