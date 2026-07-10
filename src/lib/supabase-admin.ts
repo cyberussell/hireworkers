@@ -65,3 +65,31 @@ export async function supabaseUpdateOne<T>(
   const rows = await supabaseRequest<T[]>(table, "PATCH", { query, body: patch });
   return rows[0];
 }
+
+export async function supabaseUpsertOne<T>(
+  table: string,
+  row: Record<string, unknown>,
+  conflictColumn: string
+): Promise<T> {
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error("Supabase is not configured");
+  }
+  const url = `${SUPABASE_URL}/rest/v1/${table}?on_conflict=${conflictColumn}`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_SERVICE_ROLE_KEY,
+      Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+      "Content-Type": "application/json",
+      Prefer: "resolution=merge-duplicates,return=representation",
+    },
+    body: JSON.stringify(row),
+    cache: "no-store",
+  });
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(`Supabase UPSERT ${table} failed (${response.status}): ${detail}`);
+  }
+  const rows = (await response.json()) as T[];
+  return rows[0];
+}

@@ -36,6 +36,7 @@ interface SeekerCandidateRow {
   government_id_type: string | null;
   government_id_number: string | null;
   payment_methods: string[] | null;
+  trade_slug: string | null;
 }
 
 export function rowToCandidate(row: SeekerCandidateRow): Candidate {
@@ -77,6 +78,7 @@ export function rowToCandidate(row: SeekerCandidateRow): Candidate {
     paymentMethods: (row.payment_methods ?? undefined) as
       | Candidate["paymentMethods"]
       | undefined,
+    tradeSlug: row.trade_slug ?? undefined,
   };
 }
 

@@ -7,8 +7,6 @@ import { useAuth } from "@/contexts/auth-context";
 import { SignInDialog } from "@/components/auth/sign-in-dialog";
 import { Button } from "@/components/ui/button";
 import { PanelPlaceholder } from "@/components/shared/panel-placeholder";
-import { GenerationProgress } from "@/components/shared/generation-progress";
-import { AiUnavailableBanner } from "@/components/hire/ai-unavailable-banner";
 import { TYPING_RELEVANT_CATEGORIES } from "@/lib/assessments-catalog";
 import { AssessmentCardTyping } from "@/components/seeker-dashboard/assessment-card-typing";
 import { AssessmentCardChecklist } from "@/components/seeker-dashboard/assessment-card-checklist";
@@ -22,25 +20,18 @@ import type { AssessmentGenerationResult } from "@/lib/ai/assessment-prompt";
 import type { Candidate } from "@/types/candidate";
 import type { Assessments } from "@/types/assessments";
 
-const ASSESSMENT_STAGES = [
-  "Reviewing your skills and experience…",
-  "Designing a real on-the-job scenario…",
-  "Building your tools & skills checklist…",
-  "Finalizing your assessments…",
-];
-
 export function SeekerDashboard() {
   const { user, loading } = useAuth();
   const [candidate, setCandidate] = useState<Candidate | null>(null);
   const [candidateLoading, setCandidateLoading] = useState(true);
   const [signInOpen, setSignInOpen] = useState(false);
   const [saveError, setSaveError] = useState(false);
-  const [generated, setGenerated] = useState<AssessmentGenerationResult | null>(
-    null
-  );
-  const [generationStatus, setGenerationStatus] = useState<
-    "idle" | "loading" | "ai_unavailable" | "error"
-  >("idle");
+  // Pulled once alongside the candidate from a trade_catalog DB lookup —
+  // never generated live. null means this candidate's trade hasn't been
+  // matched to a catalog entry yet (Mission Control handles filling that
+  // gap), not that something failed.
+  const [assessmentCatalog, setAssessmentCatalog] =
+    useState<AssessmentGenerationResult | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -53,7 +44,9 @@ export function SeekerDashboard() {
     fetch("/api/seeker-candidates/me")
       .then((response) => response.json())
       .then((data) => {
-        if (!cancelled) setCandidate(data.candidate ?? null);
+        if (cancelled) return;
+        setCandidate(data.candidate ?? null);
+        setAssessmentCatalog(data.assessmentCatalog ?? null);
       })
       .catch(() => {
         if (!cancelled) setCandidate(null);
@@ -72,44 +65,6 @@ export function SeekerDashboard() {
     // time you switch back to this tab.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
-
-  useEffect(() => {
-    if (!candidate) return;
-
-    let cancelled = false;
-    setGenerationStatus("loading");
-    fetch("/api/assessments/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        professionalTitle: candidate.professionalTitle,
-        category: candidate.category,
-        skills: candidate.skills,
-      }),
-    })
-      .then(async (response) => {
-        if (cancelled) return;
-        if (response.status === 503) {
-          setGenerationStatus("ai_unavailable");
-          return;
-        }
-        if (!response.ok) {
-          setGenerationStatus("error");
-          return;
-        }
-        const data = await response.json();
-        setGenerated(data);
-        setGenerationStatus("idle");
-      })
-      .catch(() => {
-        if (!cancelled) setGenerationStatus("error");
-      });
-
-    return () => {
-      cancelled = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [candidate?.id]);
 
   async function saveAssessments(next: Assessments) {
     setSaveError(false);
@@ -217,20 +172,7 @@ export function SeekerDashboard() {
         </p>
       )}
 
-      {generationStatus === "loading" && (
-        <GenerationProgress
-          title={`Building assessments for your work as a ${candidate.professionalTitle}`}
-          stages={ASSESSMENT_STAGES}
-        />
-      )}
-      {generationStatus === "ai_unavailable" && <AiUnavailableBanner />}
-      {generationStatus === "error" && (
-        <p className="text-sm text-danger">
-          Could not build your assessments right now. Refresh to try again.
-        </p>
-      )}
-
-      {generationStatus === "idle" && generated && (
+      {assessmentCatalog ? (
         <div className="grid gap-4 sm:grid-cols-2">
           {showTyping && (
             <AssessmentCardTyping
@@ -239,16 +181,21 @@ export function SeekerDashboard() {
             />
           )}
           <AssessmentCardChecklist
-            checklist={generated.checklist}
+            checklist={assessmentCatalog.checklist}
             assessments={candidate.assessments}
             onSave={saveAssessments}
           />
           <AssessmentCardScenario
-            scenario={generated.scenario}
+            scenario={assessmentCatalog.scenario}
             assessments={candidate.assessments}
             onSave={saveAssessments}
           />
         </div>
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          We&apos;re still building skill assessments for{" "}
+          {candidate.professionalTitle} — check back soon.
+        </p>
       )}
     </div>
   );

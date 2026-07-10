@@ -8,6 +8,7 @@ import {
 import { getClientKey, isRateLimited } from "@/lib/rate-limit";
 import { isSupabaseConfigured, supabaseInsertOne } from "@/lib/supabase-admin";
 import { requireUser } from "@/lib/supabase/server";
+import { matchOrQueueTrade } from "@/lib/trade-match";
 import { validateProfileDraftFields } from "@/lib/validate-profile-draft";
 import { SeekerProfileDraftSchema } from "@/types/seeker-profile-draft";
 
@@ -82,6 +83,11 @@ export async function POST(request: Request) {
       "seeker_candidates",
       draftToRow(draft, user.id, avatarUrl)
     );
+    await matchOrQueueTrade({
+      candidateId: row.id,
+      professionalTitle: draft.professionalTitle,
+      category: draft.category,
+    });
     return Response.json({ candidate: rowToCandidate(row) }, { status: 201 });
   } catch (error) {
     console.error("failed to create seeker candidate", error);

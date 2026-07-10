@@ -25,6 +25,7 @@ import { candidateToDraft } from "@/lib/candidate-to-draft";
 import type { ChatMessage, HireStatus } from "@/types/chat";
 import type { SeekerProfileDraft } from "@/types/seeker-profile-draft";
 import type { Candidate } from "@/types/candidate";
+import type { GrowthSuggestions } from "@/lib/ai/growth-prompt";
 
 const PROFILE_STAGES = [
   "Listening to what you shared…",
@@ -59,6 +60,9 @@ export function WorkExperience() {
   // entirely and land straight on it — the chat is only for first-timers.
   const [candidateChecked, setCandidateChecked] = useState(false);
   const [existingCandidate, setExistingCandidate] = useState<Candidate | null>(
+    null
+  );
+  const [growthCatalog, setGrowthCatalog] = useState<GrowthSuggestions | null>(
     null
   );
   const [viewMode, setViewMode] = useState<"summary" | "edit">("summary");
@@ -195,6 +199,7 @@ export function WorkExperience() {
       .then((data) => {
         if (cancelled) return;
         setExistingCandidate(data.candidate ?? null);
+        setGrowthCatalog(data.growthCatalog ?? null);
         setCandidateChecked(true);
       })
       .catch(() => {
@@ -336,7 +341,7 @@ export function WorkExperience() {
               }
             />
             <IndustryRankingCard />
-            <GrowthSuggestionsCard />
+            <GrowthSuggestionsCard growth={growthCatalog} />
           </div>
         </div>
       </div>

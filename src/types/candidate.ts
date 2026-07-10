@@ -154,4 +154,9 @@ export interface Candidate {
   governmentIdNumber?: string;
   /** How they'd like to be paid — shown on their profile alongside rate. */
   paymentMethods?: PaymentMethod[];
+  /** Set by an AI match (once, on profile save) against trade_catalog —
+   * null/undefined means either not matched yet or genuinely no close
+   * match, in which case a missing_trade_requests row exists for Mission
+   * Control to fill in. Never regenerated on every dashboard view. */
+  tradeSlug?: string;
 }
