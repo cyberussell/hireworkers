@@ -78,7 +78,11 @@ export function SignInDialog({
       const message = await signUpWithEmail(email, password, next);
       setSubmitting(false);
       if (message) {
-        setError(message);
+        setError(
+          message.toLowerCase().includes("rate limit")
+            ? "We've sent a lot of confirmation emails recently — please wait a bit and try again."
+            : message
+        );
         return;
       }
       setConfirmationSent(true);

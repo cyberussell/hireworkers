@@ -7,7 +7,13 @@ export function PhoneMockup({ children }: { children: ReactNode }) {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 hidden dark:block"
       >
-        <div className="absolute top-1/2 left-1/2 h-[110%] w-[110%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/40 blur-[90px]" />
+        <div
+          className="absolute top-1/2 left-1/2 h-[140%] w-[140%] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[100px]"
+          style={{
+            background:
+              "radial-gradient(circle, color-mix(in srgb, var(--color-primary) 45%, transparent) 0%, transparent 70%)",
+          }}
+        />
       </div>
       <div className="relative aspect-[9/16] rounded-[2.5rem] bg-neutral-950 p-2.5 shadow-2xl">
         <div className="absolute top-2 left-1/2 z-10 h-4 w-24 -translate-x-1/2 rounded-full bg-neutral-950" />
